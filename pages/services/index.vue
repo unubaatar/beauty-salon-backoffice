@@ -1,11 +1,265 @@
 <template>
-    <div></div>
-</template>
+  <div>
+    <v-row>
+      <v-col v-for="service in services" cols="12" md="4" xl="3" >
+        <v-card style="cursor: pointer" rounded="lg">
+          <img
+            style="width: 100%; height: 200px; object-fit: cover"
+            :src="service.image"
+            alt=""
+          />
+          <div class="pa-4 pt-2">
+            <div style="font-size: 18px; font-weight: 500">
+              {{ service.title }}
+            </div>
+            <div style="font-size: 14px; font-weight: 450; color: gray">
+              {{ service.description }}
+            </div>
+            <div class="mt-4 mb-2">Хийх ажилчид: </div>
+            <div >
+                <v-chip variant="outlined" color="grey" class="mr-2" v-for="worker in service.workers" size="small">
+                    {{ worker.firstName }}
+                </v-chip>
+            </div>
+            <div
+              class="d-flex mt-4 justify-space-between"
+              style="font-size: 20px; font-weight: bolder"
+            >
+            <div>   {{ service.price.toLocaleString() }}₮</div>
+                <v-btn @click="showUpdateServiceDialog = true; currentService = service " color="#101828" icon="mdi-pencil" size="small" elevation="0"></v-btn>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
 
+    <v-btn
+    color="#101828"
+      @click="showAddServiceDialog = true"
+      style="position: fixed; bottom: 5%; right: 5%"
+      ><v-icon>mdi-plus</v-icon> Үйлчилгээ нэмэх
+    </v-btn>
+
+    <v-dialog v-model="showAddServiceDialog" max-width="600">
+      <v-card rounded="lg" class="pa-4">
+        <div
+          class="d-flex justify-center mb-4"
+          style="font-size: 24px; font-weight: 450"
+        >
+          Үйлчилгээ нэмэх
+        </div>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="serviceToAdd.title"
+              label="Үйлчилгээний нэр"
+              variant="outlined"
+              hide-details
+            ></v-text-field
+          ></v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="serviceToAdd.price"
+              label="Үнэ"
+              variant="outlined"
+              type="number"
+              hide-details
+            ></v-text-field
+          ></v-col>
+          <v-col cols="12">
+            <v-textarea
+              v-model="serviceToAdd.description"
+              hide-details
+              label="Тайлбар"
+              variant="outlined"
+            >
+            </v-textarea>
+          </v-col>
+          <v-col cols="12">
+            <v-select
+              v-model="serviceToAdd.workers"
+              multiple
+              :items="workers"
+              item-value="_id"
+              item-title="firstName"
+              hide-details
+              label="Ажилтан"
+              variant="outlined"
+            >
+            </v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              v-model="serviceToAdd.image"
+              label="Зурагны URL"
+              variant="outlined"
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <div class="pt-4 d-flex justify-end">
+          <v-btn color="#101828" @click="addService()"
+            ><v-icon>mdi-plus</v-icon> <span class="ml-2">Нэмэх</span>
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+
+
+    <v-dialog v-model="showUpdateServiceDialog" max-width="600">
+      <v-card rounded="lg" class="pa-4">
+        <div
+          class="d-flex justify-center mb-4"
+          style="font-size: 24px; font-weight: 450"
+        >
+          Үйлчилгээ засах
+        </div>
+        <v-row>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="currentService.title"
+              label="Үйлчилгээний нэр"
+              variant="outlined"
+              hide-details
+            ></v-text-field
+          ></v-col>
+          <v-col cols="12" md="6">
+            <v-text-field
+              v-model="currentService.price"
+              label="Үнэ"
+              variant="outlined"
+              type="number"
+              hide-details
+            ></v-text-field
+          ></v-col>
+          <v-col cols="12">
+            <v-textarea
+              v-model="currentService.description"
+              hide-details
+              label="Тайлбар"
+              variant="outlined"
+            >
+            </v-textarea>
+          </v-col>
+          <v-col cols="12">
+            <v-select
+              v-model="currentService.workers"
+              multiple
+              :items="workers"
+              item-value="_id"
+              item-title="firstName"
+              hide-details
+              label="Ажилтан"
+              variant="outlined"
+            >
+            </v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              v-model="currentService.image"
+              label="Зурагны URL"
+              variant="outlined"
+              hide-details
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <div class="pt-4 d-flex justify-end">
+          <v-btn color="#101828" @click="updateService()"
+            ><v-icon>mdi-pencil</v-icon> <span class="ml-2">Засах</span>
+          </v-btn>
+        </div>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
 
 <script setup lang="ts">
 definePageMeta({
-    layout: "layout",
-    middleware: "auth"
-})
+  layout: "layout",
+  middleware: "auth",
+});
+
+import axios from "axios";
+import { useDisplay } from "vuetify";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+const { mdAndUp } = useDisplay();
+
+const router = useRouter();
+const route = useRoute();
+
+const config = useRuntimeConfig();
+const baseURL = config.public.baseURL;
+
+const services = ref<any>([]);
+const count = ref<any>(0);
+const showAddServiceDialog = ref<any>(false);
+const showUpdateServiceDialog = ref<any>(false);
+const serviceToAdd = ref<any>({});
+const currentService = ref<any>({});
+const workers = ref<any>([]);
+
+const fetchServices = async () => {
+  try {
+    const response = await axios.post(`${baseURL}/services/all`);
+    if (response.status === 200) {
+      services.value = response.data.rows;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchWorkers = async () => {
+  try {
+    const response = await axios.post(`${baseURL}/users/getWorkers`);
+    if (response.status === 200) {
+      workers.value = response.data;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const addService = async () => {
+  try {
+    const response = await axios.post(
+      `${baseURL}/services/create`,
+      serviceToAdd.value
+    );
+    if (response.status === 201) {
+      showAddServiceDialog.value = false;
+      serviceToAdd.value = {};
+      await fetchServices();
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateService = async () => {
+    try {
+        const response = await axios.post(`${baseURL}/services/update` , currentService.value);
+        if(response.status === 200) {
+            showUpdateServiceDialog.value = false;
+            currentService.value = {};
+            await fetchServices();
+        } else {
+            console.log("jiijii");
+        }
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+onMounted(async () => {
+  await fetchServices();
+  await fetchWorkers();
+});
 </script>

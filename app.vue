@@ -56,7 +56,7 @@
     </div>
 
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage class="pa-8" />
     </NuxtLayout>
   </div>
 </template>

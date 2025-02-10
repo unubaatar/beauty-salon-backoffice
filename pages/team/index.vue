@@ -1,7 +1,7 @@
 <template>
-  <div class="pa-8">
+  <div>
     <v-row>
-      <v-col v-for="user in users" cols="12" md="3">
+      <v-col v-for="user in users" cols="12" md="4" xl="3">
         <v-card style="cursor: pointer;" rounded="lg" elevation="3">
           <div
             :style="
