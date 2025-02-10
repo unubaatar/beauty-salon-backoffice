@@ -25,11 +25,20 @@
                 Welcome Back
               </div>
               <v-text-field
+                v-model="userData.phone"
                 label="Утасны дугаар"
                 variant="outlined"
               ></v-text-field>
-              <v-text-field label="Нууц үг" variant="outlined"></v-text-field>
-              <v-btn color="pink" height="48" elevation="0" block
+              <v-text-field
+                v-model="userData.password"
+                label="Нууц үг"
+                variant="outlined"
+                :type="passwordVisible ? 'text' : 'password'"
+                append-inner-icon="mdi-eye"
+                @click:append-inner="togglePasswordVisibility"
+                outlined
+              ></v-text-field>
+              <v-btn @click="login()" color="pink" height="48" elevation="0" block
                 >Нэвтрэх</v-btn
               >
               <hr class="my-4" />
@@ -69,11 +78,38 @@ definePageMeta({
 
 import axios from "axios";
 import { useDisplay } from "vuetify";
+import { ref, onMounted } from "vue";
+import { useRoute , useRouter } from "vue-router";
 const { mdAndUp } = useDisplay();
 
+const router = useRouter();
+const route = useRoute();
+
+const config = useRuntimeConfig();
+const baseURL = config.public.baseURL;
+
+const passwordVisible = ref(false);
+const userData = ref<any>({});
+
+const togglePasswordVisibility = () => {
+  passwordVisible.value = !passwordVisible.value;
+};
+
+const login = async() => {
+  try {
+    const response = await axios.post(`${baseURL}/users/login` , userData.value);
+    if(response.status === 200) {
+      localStorage.setItem("userId" , response.data.user);
+      router.push("/dashboard");
+    } else {
+      console.log("jiijii");
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
