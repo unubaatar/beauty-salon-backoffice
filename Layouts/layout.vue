@@ -14,7 +14,7 @@
         style="
           width: 100%;
           height: 100%;
-          background-color: oklch(0.21 0.034 264.665);
+          background-color: #101828;
           border-top-right-radius: 24px;
           border-bottom-right-radius: 24px;
         "
