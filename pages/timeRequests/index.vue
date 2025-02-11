@@ -28,7 +28,7 @@
 
     <v-row>
       <v-col cols="12" lg="3" md="3" v-for="day in weekSchedule">
-        <v-card variant="outlined" height="500" class="pa-4" rounded="lg">
+        <v-card variant="outlined" height="540" class="pa-4" rounded="lg">
           <div class="text-center">
             <div style="font-size: 20px; font-weight: 500">
               {{ day.dateTitle }}
@@ -92,15 +92,31 @@
             </v-list-item>
           </v-list>
 
-          <div class="d-flex justify-center">
+          <div class="w-100 d-flex justify-center flex-column align-center">
             <v-btn
+              @click="
+                currentScheduleDetail = [];
+                showScheduleDetailDialog = true;
+                dateTitle = day.dateTitle;
+                fetchScheduleByDay();
+              "
+              color="#101828"
+              elevation="0"
+              block
+              variant="outlined"
+            >
+              <v-icon class="ml-1">mdi-plus</v-icon> Дэлгэрэнгүй</v-btn
+            >
+
+            <v-btn
+              class="mt-4"
               @click="
                 showAddScheduleDialog = true;
                 dateTitle = day.dateTitle;
               "
               color="#101828"
-              rounded="pill"
               elevation="0"
+              block
             >
               <v-icon class="ml-1">mdi-plus</v-icon> Хуваарь нэмэх</v-btn
             >
@@ -151,6 +167,87 @@
         </div>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="showScheduleDetailDialog" max-width="1260">
+      <v-card class="pa-8">
+        <v-table v-if="currentScheduleDetail.length > 0">
+          <thead>
+            <tr>
+              <th class="text-start">Цаг</th>
+              <th  v-for="schedule in currentScheduleDetail">
+                <center>
+                  <div class="pb-4 d-flex align-center justify-center">
+                  <img
+                    style="
+                      width: 48px;
+                      height: 48px;
+                      object-fit: cover;
+                      border-radius: 50%;
+                    "
+                    :src="schedule.worker.avatar"
+                    alt=""
+                  />
+                  <span  class="ml-2" style="font-size: 20px;">{{ schedule.worker.firstName }}</span>
+                </div>
+                </center>
+     
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="time in times">
+              <td>
+                {{ time.time }}
+              </td>
+              <td
+                align="center"
+                class="pa-4"
+                v-for="schedule in currentScheduleDetail"
+              >
+                <v-card
+                  align="start"
+                  variant="tonal"
+                  max-width="200"
+                  v-if="
+                    getTimeRequestData(schedule.worker._id, time.dateTitle) !==
+                    null
+                  "
+                  class="pa-2"
+                >
+                  <div style="font-size: 12px">
+                    {{
+                      getTimeRequestData(schedule.worker._id, time.dateTitle)
+                        .service.title
+                    }}
+                  </div>
+                  <div style="font-size: 12px">
+                    {{
+                      getTimeRequestData(
+                        schedule.worker._id,
+                        time.dateTitle
+                      ).service.price.toLocaleString()
+                    }}₮
+                  </div>
+                  <div class="mt-2 d-flex justify-space-between">
+                    <span style="font-size: 12px"
+                      >{{
+                        getTimeRequestData(schedule.worker._id, time.dateTitle)
+                          .customer.firstName
+                      }} </span
+                    ><span style="font-size: 12px"
+                      >{{
+                        getTimeRequestData(schedule.worker._id, time.dateTitle)
+                          .customer.phone
+                      }}
+                    </span>
+                  </div>
+                </v-card>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -176,12 +273,69 @@ const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
 const showAddScheduleDialog = ref<any>(false);
 const showConfirmDialog = ref<any>(false);
+const showScheduleDetailDialog = ref<any>(false);
 const weekDays = ref<any>([]);
 const weekSchedule = ref<any>([]);
 const users = ref<any>([]);
+const currentScheduleDetail = ref<any>([]);
 const userToAddSchedule = ref<any>("");
 const scheduleToDelete = ref<any>("");
 const dateTitle = ref<any>("");
+
+const times = ref<any>([
+  {
+    dateTitle: "10:00",
+    time: "10:00-11:00",
+  },
+  {
+    dateTitle: "11:00",
+    time: "11:00-12:00",
+  },
+  {
+    dateTitle: "12:00",
+    time: "12:00-13:00",
+  },
+  {
+    dateTitle: "13:00",
+    time: "13:00-14:00",
+  },
+  {
+    dateTitle: "14:00",
+    time: "14:00-15:00",
+  },
+  {
+    dateTitle: "16:00",
+    time: "16:00-17:00",
+  },
+  {
+    dateTitle: "17:00",
+    time: "17:00-18:00",
+  },
+  {
+    dateTitle: "18:00",
+    time: "18:00-19:00",
+  },
+  {
+    dateTitle: "19:00",
+    time: "19:00-20:00",
+  },
+  {
+    dateTitle: "20:00",
+    time: "20:00-21:00",
+  },
+]);
+
+const getTimeRequestData = (worker: any, time: any) => {
+  for (let schedule of currentScheduleDetail.value) {
+    const foundTimeRequest = schedule.timeRequests.find(
+      (timeReq: any) => timeReq.time === time && schedule.worker._id === worker
+    );
+    if (foundTimeRequest) {
+      return foundTimeRequest;
+    }
+  }
+  return null;
+};
 
 const fetchWeekSchedule = async () => {
   try {
@@ -202,7 +356,7 @@ const fetchWeekSchedule = async () => {
   }
 };
 
-const getPreviousWeekData= async () => {
+const getPreviousWeekData = async () => {
   try {
     const startDate = moment(weekDays.value[0])
       .subtract(7, "days")
@@ -234,13 +388,27 @@ const getNextWeekData = async () => {
   }
 };
 
-
-
 const fetchUsers = async () => {
   try {
     const response = await axios.post(`${baseURL}/users/all`);
     if (response.status === 200) {
       users.value = response.data.rows;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchScheduleByDay = async () => {
+  try {
+    const query = {
+      dateTitle: dateTitle.value,
+    };
+    const response = await axios.post(`${baseURL}/schedules/getByDate`, query);
+    if (response.status === 200) {
+      currentScheduleDetail.value = response.data;
     } else {
       console.log("jiijii");
     }
