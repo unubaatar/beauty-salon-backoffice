@@ -59,7 +59,7 @@
                       <span
                         class="ml-2"
                         style="font-weight: 500; font-size: 16px"
-                        >{{ schedule.totalService }}</span
+                        >{{ schedule.totalServices }}</span
                       >
                     </div>
                   </div>
@@ -170,82 +170,7 @@
 
     <v-dialog v-model="showScheduleDetailDialog" max-width="1260">
       <v-card class="pa-8">
-        <v-table v-if="currentScheduleDetail.length > 0">
-          <thead>
-            <tr>
-              <th class="text-start">Цаг</th>
-              <th  v-for="schedule in currentScheduleDetail">
-                <center>
-                  <div class="pb-4 d-flex align-center justify-center">
-                  <img
-                    style="
-                      width: 48px;
-                      height: 48px;
-                      object-fit: cover;
-                      border-radius: 50%;
-                    "
-                    :src="schedule.worker.avatar"
-                    alt=""
-                  />
-                  <span  class="ml-2" style="font-size: 20px;">{{ schedule.worker.firstName }}</span>
-                </div>
-                </center>
-     
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="time in times">
-              <td>
-                {{ time.time }}
-              </td>
-              <td
-                align="center"
-                class="pa-4"
-                v-for="schedule in currentScheduleDetail"
-              >
-                <v-card
-                  align="start"
-                  variant="tonal"
-                  max-width="200"
-                  v-if="
-                    getTimeRequestData(schedule.worker._id, time.dateTitle) !==
-                    null
-                  "
-                  class="pa-2"
-                >
-                  <div style="font-size: 12px">
-                    {{
-                      getTimeRequestData(schedule.worker._id, time.dateTitle)
-                        .service.title
-                    }}
-                  </div>
-                  <div style="font-size: 12px">
-                    {{
-                      getTimeRequestData(
-                        schedule.worker._id,
-                        time.dateTitle
-                      ).service.price.toLocaleString()
-                    }}₮
-                  </div>
-                  <div class="mt-2 d-flex justify-space-between">
-                    <span style="font-size: 12px"
-                      >{{
-                        getTimeRequestData(schedule.worker._id, time.dateTitle)
-                          .customer.firstName
-                      }} </span
-                    ><span style="font-size: 12px"
-                      >{{
-                        getTimeRequestData(schedule.worker._id, time.dateTitle)
-                          .customer.phone
-                      }}
-                    </span>
-                  </div>
-                </v-card>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
+
       </v-card>
     </v-dialog>
   </div>
@@ -282,60 +207,6 @@ const userToAddSchedule = ref<any>("");
 const scheduleToDelete = ref<any>("");
 const dateTitle = ref<any>("");
 
-const times = ref<any>([
-  {
-    dateTitle: "10:00",
-    time: "10:00-11:00",
-  },
-  {
-    dateTitle: "11:00",
-    time: "11:00-12:00",
-  },
-  {
-    dateTitle: "12:00",
-    time: "12:00-13:00",
-  },
-  {
-    dateTitle: "13:00",
-    time: "13:00-14:00",
-  },
-  {
-    dateTitle: "14:00",
-    time: "14:00-15:00",
-  },
-  {
-    dateTitle: "16:00",
-    time: "16:00-17:00",
-  },
-  {
-    dateTitle: "17:00",
-    time: "17:00-18:00",
-  },
-  {
-    dateTitle: "18:00",
-    time: "18:00-19:00",
-  },
-  {
-    dateTitle: "19:00",
-    time: "19:00-20:00",
-  },
-  {
-    dateTitle: "20:00",
-    time: "20:00-21:00",
-  },
-]);
-
-const getTimeRequestData = (worker: any, time: any) => {
-  for (let schedule of currentScheduleDetail.value) {
-    const foundTimeRequest = schedule.timeRequests.find(
-      (timeReq: any) => timeReq.time === time && schedule.worker._id === worker
-    );
-    if (foundTimeRequest) {
-      return foundTimeRequest;
-    }
-  }
-  return null;
-};
 
 const fetchWeekSchedule = async () => {
   try {

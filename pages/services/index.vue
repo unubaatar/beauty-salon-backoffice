@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row>
-      <v-col v-for="service in services" cols="12" md="4" xl="3" >
+      <v-col v-for="service in services" cols="12" md="4" xl="3">
         <v-card style="cursor: pointer" rounded="lg">
           <img
             style="width: 100%; height: 200px; object-fit: cover"
@@ -15,18 +15,33 @@
             <div style="font-size: 14px; font-weight: 450; color: gray">
               {{ service.description }}
             </div>
-            <div class="mt-4 mb-2">Хийх ажилчид: </div>
-            <div >
-                <v-chip variant="outlined" color="grey" class="mr-2" v-for="worker in service.workers" size="small">
-                    {{ worker.firstName }}
-                </v-chip>
+            <div class="mt-4 mb-2">Хийх ажилчид:</div>
+            <div>
+              <v-chip
+                variant="outlined"
+                color="grey"
+                class="mr-2"
+                v-for="worker in service.workers"
+                size="small"
+              >
+                {{ worker.firstName }}
+              </v-chip>
             </div>
             <div
               class="d-flex mt-4 justify-space-between"
               style="font-size: 20px; font-weight: bolder"
             >
-            <div>   {{ service.price.toLocaleString() }}₮</div>
-                <v-btn @click="showUpdateServiceDialog = true; currentService = service " color="#101828" icon="mdi-pencil" size="small" elevation="0"></v-btn>
+              <div>{{ service.price.toLocaleString() }}₮</div>
+              <v-btn
+                @click="
+                  showUpdateServiceDialog = true;
+                  currentService = service;
+                "
+                color="#101828"
+                icon="mdi-pencil"
+                size="small"
+                elevation="0"
+              ></v-btn>
             </div>
           </div>
         </v-card>
@@ -34,7 +49,7 @@
     </v-row>
 
     <v-btn
-    color="#101828"
+      color="#101828"
       @click="showAddServiceDialog = true"
       style="position: fixed; bottom: 5%; right: 5%"
       ><v-icon>mdi-plus</v-icon> Үйлчилгээ нэмэх
@@ -105,7 +120,6 @@
       </v-card>
     </v-dialog>
 
-
     <v-dialog v-model="showUpdateServiceDialog" max-width="600">
       <v-card rounded="lg" class="pa-4">
         <div
@@ -153,6 +167,15 @@
               variant="outlined"
             >
             </v-select>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
+              v-model="currentService.duration"
+              label="Хугацаа (минут)"
+              variant="outlined"
+              hide-details
+            >
+            </v-text-field>
           </v-col>
           <v-col cols="12">
             <v-text-field
@@ -244,19 +267,22 @@ const addService = async () => {
 };
 
 const updateService = async () => {
-    try {
-        const response = await axios.post(`${baseURL}/services/update` , currentService.value);
-        if(response.status === 200) {
-            showUpdateServiceDialog.value = false;
-            currentService.value = {};
-            await fetchServices();
-        } else {
-            console.log("jiijii");
-        }
-    } catch(err) {
-        console.log(err);
+  try {
+    const response = await axios.post(
+      `${baseURL}/services/update`,
+      currentService.value
+    );
+    if (response.status === 200) {
+      showUpdateServiceDialog.value = false;
+      currentService.value = {};
+      await fetchServices();
+    } else {
+      console.log("jiijii");
     }
-}
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 onMounted(async () => {
   await fetchServices();
