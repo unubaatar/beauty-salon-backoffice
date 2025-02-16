@@ -27,7 +27,7 @@
     </div>
 
     <v-row>
-      <v-col cols="12" lg="3" md="3" v-for="day in weekSchedule">
+      <v-col cols="12" lg="4" md="4" xl="3" v-for="day in weekSchedule">
         <v-card variant="outlined" height="540" class="pa-4" rounded="lg">
           <div class="text-center">
             <div style="font-size: 20px; font-weight: 500">
@@ -168,9 +168,82 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="showScheduleDetailDialog" max-width="1260">
+    <v-dialog v-model="showScheduleDetailDialog" max-width="1080">
       <v-card class="pa-8">
+        <v-table>
+          <thead>
+            <tr style="height: 50px">
+              <th>Цаг</th>
+              <th v-for="schedule in currentScheduleDetail">
+                <div class="d-flex justify-center align-center py-2">
+                  <img
+                    :src="schedule.worker.avatar"
+                    style="height: 50px; width: 50px; border-radius: 50%"
+                    alt=""
+                  />
+                  <span class="ml-4">{{ schedule.worker.firstName }}</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
 
+          <tbody>
+            <tr v-for="time in times" style="height: 60px !important">
+              <td style="height: 60px">{{ time }}</td>
+
+              <v-hover>
+                <template v-slot:default="{ isHovering, props }">
+                  <td
+                    style="position: relative; overflow: visible"
+                    v-for="schedule in currentScheduleDetail"
+                  >
+                    <v-card
+                      @click="goToDetail(getResvervedTime(schedule, time)._id)"
+                      v-bind="props"
+                      :color="isHovering ? 'primary' : undefined"
+                      class="pa-2"
+                      variant="tonal"
+                      style="background-color: white; cursor: pointer"
+                      v-if="getResvervedTime(schedule, time)"
+                      :style="{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        right: '0',
+                        height:
+                          `${calcHeight(
+                            getResvervedTime(schedule, time).totalDuration
+                          )}` + 'px !important',
+                      }"
+                    >
+                      <div>
+                        <div class="mb-2 d-flex justify-space-between">
+                          <div>
+                            {{
+                              getResvervedTime(schedule, time).customer
+                                .firstName
+                            }}
+                          </div>
+                          <div>
+                            {{
+                              getResvervedTime(schedule, time).customer.phone
+                            }}
+                          </div>
+                        </div>
+                        <div
+                          v-for="service in getResvervedTime(schedule, time)
+                            .services"
+                        >
+                          {{ service.title }}
+                        </div>
+                      </div>
+                    </v-card>
+                  </td>
+                </template>
+              </v-hover>
+            </tr>
+          </tbody>
+        </v-table>
       </v-card>
     </v-dialog>
   </div>
@@ -183,7 +256,7 @@ definePageMeta({
 });
 
 import axios from "axios";
-import moment, { weekdays } from "moment";
+import moment, { duration, weekdays } from "moment";
 import { useDisplay } from "vuetify";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -206,7 +279,40 @@ const currentScheduleDetail = ref<any>([]);
 const userToAddSchedule = ref<any>("");
 const scheduleToDelete = ref<any>("");
 const dateTitle = ref<any>("");
+const times = ref<any>([
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+]);
 
+const calcHeight = (duration: any) => {
+  return (duration / 30) * 60;
+};
+
+const getResvervedTime = (schedule: any, startTime: any) => {
+  for (let timeReserve of schedule.timeReserves) {
+    if (timeReserve.startTime === startTime) {
+      return timeReserve;
+    }
+  }
+};
 
 const fetchWeekSchedule = async () => {
   try {
@@ -321,6 +427,10 @@ const deleteSchedule = async (id: any) => {
   } else {
     toast.error("Алдаа заалаа.");
   }
+};
+
+const goToDetail = (id: any) => {
+  router.push(`/timeRequests/${id}`);
 };
 
 onMounted(async () => {
