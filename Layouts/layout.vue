@@ -94,7 +94,13 @@ const sideBarMenuItems = ref<any>([
                 title: "Үйлчилгээнүүд",
                 logo: "mdi-hair-dryer-outline",
                 link: "/services"
-            },       {
+            },    
+            {
+                title: "Үйлчилгээний ангилалууд",
+                logo: "mdi-shape-plus",
+                link: "/serviceCategories"
+            },      
+            {
                 title: "Цаг захиалга",
                 logo: "mdi-timetable",
                 link: "/timeRequests"

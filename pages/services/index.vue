@@ -8,6 +8,28 @@
             :src="service.image"
             alt=""
           />
+
+          <v-chip
+            variant="flat"
+            color="white"
+            size="small"
+            rounded="xl"
+            style="position: absolute; top: 2%; right: 3%; border-radius: 4px"
+            class="pa-2 mt-2 mb-2 d-flex align-center"
+            ><v-icon>mdi-clock</v-icon
+            ><span class="ml-2">{{ service.duration }} минут</span></v-chip
+          >
+
+          <v-chip
+            variant="flat"
+                     color="#101828"
+            size="small"
+            rounded="xl"
+            style="position: absolute; top: 2%; left: 3%; border-radius: 4px"
+            class="pa-2 mt-2 mb-2 d-flex align-center"
+            ><span class="ml-2">{{ service.category.title }} </span></v-chip
+          >
+
           <div class="pa-4 pt-2">
             <div style="font-size: 18px; font-weight: 500">
               {{ service.title }}
@@ -15,8 +37,9 @@
             <div style="font-size: 14px; font-weight: 450; color: gray">
               {{ service.description }}
             </div>
-            <div class="mt-4 mb-2">Хийх ажилчид:</div>
-            <div>
+            <!-- <div class="mb-2">Хийх ажилчид:</div> -->
+
+            <div class="mt-2">
               <v-chip
                 variant="outlined"
                 color="grey"
@@ -157,6 +180,19 @@
           </v-col>
           <v-col cols="12">
             <v-select
+              v-model="currentService.category"
+              label="Ангилал"
+              variant="outlined"
+              :items="serviceCategories"
+              item-value="_id"
+              item-title="title"
+              hide-details
+            >
+            </v-select>
+          </v-col>
+
+          <v-col cols="12">
+            <v-select
               v-model="currentService.workers"
               multiple
               :items="workers"
@@ -221,6 +257,20 @@ const showUpdateServiceDialog = ref<any>(false);
 const serviceToAdd = ref<any>({});
 const currentService = ref<any>({});
 const workers = ref<any>([]);
+const serviceCategories = ref<any>([]);
+
+const fetchCategories = async () => {
+  try {
+    const response = await axios.post(`${baseURL}/serviceCategories/list`, {});
+    if (response.status === 200) {
+      serviceCategories.value = response.data.rows;
+    } else {
+      console.log("jiijiii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const fetchServices = async () => {
   try {
@@ -287,5 +337,6 @@ const updateService = async () => {
 onMounted(async () => {
   await fetchServices();
   await fetchWorkers();
+  await fetchCategories();
 });
 </script>
