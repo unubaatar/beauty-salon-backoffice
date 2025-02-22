@@ -9,6 +9,17 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    port: 3000,
+    port: 4000,
   },
+  app: {
+    head: {
+      title: "Beauty salon system",
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIIWju1ABYrb5DTkZ8mbDcaAekrgKnjmf0CA&s' }
+      ],
+    }
+  }
 });
+
