@@ -22,7 +22,7 @@
 
           <v-chip
             variant="flat"
-                     color="#101828"
+            color="#101828"
             size="small"
             rounded="xl"
             style="position: absolute; top: 2%; left: 3%; border-radius: 4px"
@@ -57,8 +57,9 @@
               <div>{{ service.price.toLocaleString() }}₮</div>
               <v-btn
                 @click="
-                  showUpdateServiceDialog = true;
+                  // showUpdateServiceDialog = true;
                   currentService = service;
+                  router.push(`/services/${currentService._id}`);
                 "
                 color="#101828"
                 icon="mdi-pencil"
@@ -113,6 +114,17 @@
             >
             </v-textarea>
           </v-col>
+
+          <v-col cols="12">
+            <v-text-field
+              v-model="serviceToAdd.duration"
+              label="Хугацаа (минут)"
+              variant="outlined"
+              hide-details
+            >
+            </v-text-field>
+          </v-col>
+
           <v-col cols="12">
             <v-select
               v-model="serviceToAdd.workers"
@@ -128,6 +140,15 @@
           </v-col>
           <v-col cols="12">
             <v-text-field
+              v-model="serviceToAdd.duration"
+              label="Хугацаа (минут)"
+              variant="outlined"
+              hide-details
+            >
+            </v-text-field>
+          </v-col>
+          <v-col cols="12">
+            <v-text-field
               v-model="serviceToAdd.image"
               label="Зурагны URL"
               variant="outlined"
@@ -138,93 +159,6 @@
         <div class="pt-4 d-flex justify-end">
           <v-btn color="#101828" @click="addService()"
             ><v-icon>mdi-plus</v-icon> <span class="ml-2">Нэмэх</span>
-          </v-btn>
-        </div>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="showUpdateServiceDialog" max-width="600">
-      <v-card rounded="lg" class="pa-4">
-        <div
-          class="d-flex justify-center mb-4"
-          style="font-size: 24px; font-weight: 450"
-        >
-          Үйлчилгээ засах
-        </div>
-        <v-row>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="currentService.title"
-              label="Үйлчилгээний нэр"
-              variant="outlined"
-              hide-details
-            ></v-text-field
-          ></v-col>
-          <v-col cols="12" md="6">
-            <v-text-field
-              v-model="currentService.price"
-              label="Үнэ"
-              variant="outlined"
-              type="number"
-              hide-details
-            ></v-text-field
-          ></v-col>
-          <v-col cols="12">
-            <v-textarea
-              v-model="currentService.description"
-              hide-details
-              label="Тайлбар"
-              variant="outlined"
-            >
-            </v-textarea>
-          </v-col>
-          <v-col cols="12">
-            <v-select
-              v-model="currentService.category"
-              label="Ангилал"
-              variant="outlined"
-              :items="serviceCategories"
-              item-value="_id"
-              item-title="title"
-              hide-details
-            >
-            </v-select>
-          </v-col>
-
-          <v-col cols="12">
-            <v-select
-              v-model="currentService.workers"
-              multiple
-              :items="workers"
-              item-value="_id"
-              item-title="firstName"
-              hide-details
-              label="Ажилтан"
-              variant="outlined"
-            >
-            </v-select>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              v-model="currentService.duration"
-              label="Хугацаа (минут)"
-              variant="outlined"
-              hide-details
-            >
-            </v-text-field>
-          </v-col>
-          <v-col cols="12">
-            <v-text-field
-              v-model="currentService.image"
-              label="Зурагны URL"
-              variant="outlined"
-              hide-details
-            ></v-text-field>
-          </v-col>
-        </v-row>
-        <div class="pt-4 d-flex justify-end">
-          <v-btn color="#101828" @click="updateService()"
-            ><v-icon>mdi-pencil</v-icon> <span class="ml-2">Засах</span>
           </v-btn>
         </div>
       </v-card>
@@ -251,9 +185,7 @@ const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
 
 const services = ref<any>([]);
-const count = ref<any>(0);
 const showAddServiceDialog = ref<any>(false);
-const showUpdateServiceDialog = ref<any>(false);
 const serviceToAdd = ref<any>({});
 const currentService = ref<any>({});
 const workers = ref<any>([]);
@@ -316,23 +248,6 @@ const addService = async () => {
   }
 };
 
-const updateService = async () => {
-  try {
-    const response = await axios.post(
-      `${baseURL}/services/update`,
-      currentService.value
-    );
-    if (response.status === 200) {
-      showUpdateServiceDialog.value = false;
-      currentService.value = {};
-      await fetchServices();
-    } else {
-      console.log("jiijii");
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 onMounted(async () => {
   await fetchServices();
