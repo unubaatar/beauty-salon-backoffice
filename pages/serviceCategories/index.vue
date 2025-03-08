@@ -1,11 +1,67 @@
 <template>
   <div>
+    <div>
+      <v-row>
+        <v-col cols="12" md="2" v-for="category in categories">
+          <v-card
+            @click="
+              showUpdateDialog = true;
+              currentItem = category;
+            "
+            style="cursor: pointer"
+            height="200"
+            class="pa-4 d-flex justify-center align-center flex-column"
+            rounded="xl"
+          >
+            <img
+              style="height: 72px; width: 72px; object-fit: contain"
+              :src="category.image"
+              alt=""
+            />
+
+            <div class="mt-4" style="font-weight: 550; font-size: 18px">
+              {{ category.title }}
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </div>
+
     <v-btn
       @click="showDialog = true"
       color="#101828"
       style="position: fixed; bottom: 5%; right: 5%"
       ><v-icon>mdi-plus</v-icon>Ангилал нэмэх</v-btn
     >
+
+    <v-dialog width="500" v-model="showUpdateDialog">
+      <v-card class="pa-4">
+        <div class="text-center mb-4" style="font-weight: 550; font-size: 18px">
+          Ангилал шинэчлэх
+        </div>
+        <v-text-field
+          v-model="currentItem.title"
+          variant="outlined"
+          label="Нэр"
+        ></v-text-field>
+        <v-textarea
+          v-model="currentItem.description"
+          variant="outlined"
+          label="Тайлбар"
+        ></v-textarea>
+        <v-text-field
+          v-model="currentItem.image"
+          variant="outlined"
+          label="Зураг Url"
+        ></v-text-field>
+
+        <div class="d-flex justify-end">
+          <v-btn @click="updateCategory()" color="#101828">
+            <v-icon>mdi-content-save</v-icon> Хадгалах</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
 
     <v-dialog width="500" v-model="showDialog">
       <v-card class="pa-4">
@@ -22,6 +78,11 @@
           label="Тайлбар"
           v-model="categoryDetails.description"
         ></v-textarea>
+        <v-text-field
+          v-model="categoryDetails.image"
+          variant="outlined"
+          label="Зураг URL"
+        ></v-text-field>
         <div class="d-flex justify-end">
           <v-btn @click="createCategory()" color="#101828">Нэмэх</v-btn>
         </div>
@@ -54,6 +115,8 @@ const categories = ref<any>([]);
 const count = ref<any>(0);
 const showDialog = ref<any>(false);
 const categoryDetails = ref<any>({});
+const currentItem = ref<any>({});
+const showUpdateDialog = ref<any>(false);
 
 const createCategory = async () => {
   try {
@@ -87,6 +150,20 @@ const fetchAllCategories = async () => {
     console.log(err);
   }
 };
+
+const updateCategory = async() => {
+  try {
+    const response = await axios.post(`${baseURL}/serviceCategories/update`, currentItem.value);
+    if(response.status === 200) {
+      showUpdateDialog.value = false;
+      toast.success("Амжилттай шинэчлэгдлээ");
+    } else {  
+      console.log("jiijiii");
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 onMounted(async () => {
   await fetchAllCategories();
