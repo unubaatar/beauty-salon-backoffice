@@ -85,6 +85,11 @@ const sideBarMenuItems = ref<any>([
                 logo: "mdi-account-box",
                 link: "/team"
             },
+            {
+                title: "Ажилчидын түвшин",
+                logo: "mdi-medal-outline",
+                link: "/workerLevels"
+            }
         ]
     }, 
     {

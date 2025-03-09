@@ -91,12 +91,11 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <div class="pt-4 d-flex justify-end">
-            <v-btn color="#101828" @click="updateService()"
+
+            <v-btn style="position: fixed; bottom: 5%; right: 5%;" color="#101828" @click="updateService() "
               ><v-icon>mdi-content-save</v-icon>
               <span class="ml-2">Хадгалах</span>
             </v-btn>
-          </div>
         </v-tabs-window-item>
 
         <v-tabs-window-item value="variants">
@@ -131,7 +130,23 @@
 
               <template v-slot:item.isActive="{ item }: any">
                 <div class="pa-2">
-                  <v-icon color="green">mdi-check-circle-outline</v-icon>
+                  <v-icon  v-if="item.isActive" color="green">mdi-check-circle-outline</v-icon>
+                  <v-icon  v-else color="red">mdi-close-circle-outline</v-icon>
+                </div>
+              </template>
+
+              <template v-slot:item.action="{ item }: any">
+                <div class="pa-2">
+                  <v-btn
+                    @click="
+                      showUpdateVariant = true;
+                      variantToUpdate = item;
+                    "
+                    icon="mdi-pencil"
+                    size="small"
+                    color="#101828"
+                    variant="text"
+                  ></v-btn>
                 </div>
               </template>
             </v-data-table>
@@ -203,6 +218,63 @@
         </div>
       </v-container>
     </v-navigation-drawer>
+
+    <v-navigation-drawer
+      temporary
+      location="right"
+      width="600"
+      v-model="showUpdateVariant"
+    >
+      <v-container fluid class="d-flex flex-column justify-space-between h-100">
+        <div>
+          <div
+            class="text-center py-4"
+            style="font-size: 24px; font-weight: 550"
+          >
+            Төрөл шинэчлэх
+          </div>
+          <v-container class="pa-4 px-8">
+            <v-text-field
+              variant="outlined"
+              label="Нэр"
+              v-model="variantToUpdate.title"
+            ></v-text-field>
+            <v-textarea
+              variant="outlined"
+              label="Тайлбар"
+              v-model="variantToUpdate.body"
+            ></v-textarea>
+            <v-text-field
+              variant="outlined"
+              label="Үнэ"
+              type="Number"
+              v-model="variantToUpdate.price"
+            ></v-text-field>
+
+            <v-text-field
+              variant="outlined"
+              type="Number"
+              label="Хугацаа ( Минут )"
+              v-model="variantToUpdate.duration"
+            ></v-text-field>
+            <div class="d-flex align-center">
+              <div style="font-weight: 500; font-size: 18px;" class="mr-3">Идэвхтэй эсэх:</div>
+              <v-switch
+              color="#101828"
+                hide-details
+                v-model="variantToUpdate.isActive"
+              ></v-switch>
+            </div>
+          </v-container>
+        </div>
+
+        <div class="d-flex justify-end pa-8 pb-8">
+          <v-btn @click="updateVariant()" color="#101828"
+            ><v-icon>mdi-content-save</v-icon>Хадгалах</v-btn
+          >
+        </div>
+      </v-container>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -233,7 +305,10 @@ const count = ref<any>(null);
 const workers = ref<any>([]);
 const tab = ref<any>(null);
 const showAddVariant = ref<any>(false);
+const showUpdateVariant = ref<any>(false);
 const variantToAdd = ref<any>({});
+const variantToUpdate = ref<any>({});
+
 const headers = ref<any>([
   {
     title: "№",
@@ -268,6 +343,12 @@ const headers = ref<any>([
   {
     title: "Идэвхтэй эсэх",
     value: "isActive",
+    align: "center",
+    sortable: false,
+  },
+  {
+    title: "Үйлдэл",
+    value: "action",
     align: "center",
     sortable: false,
   },
@@ -371,6 +452,29 @@ const addVariant = async () => {
     console.log(err);
   }
 };
+
+const updateVariant = async () => {
+  try {
+    variantToAdd.value.service = route.params._id;
+    const response = await axios.post(
+      `${baseURL}/serviceVariants/update`,
+      variantToUpdate.value
+    );
+    if (response.status === 200) {
+      await fetchVariants();
+      showUpdateVariant.value = false;
+      variantToUpdate.value = {};
+      toast.success("Амжилттай хадгалагдлаа");
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+
+
 
 onMounted(async () => {
   await fetchService();
