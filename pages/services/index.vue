@@ -34,8 +34,8 @@
             <div style="font-size: 18px; font-weight: 500">
               {{ service.title }}
             </div>
-            <div style="font-size: 14px; font-weight: 450; color: gray">
-              {{ service.description }}
+            <div style="font-size: 14px; font-weight: 400; color: gray">
+              {{ service.description.split(" ").slice(0, 10).join(" ") }} ...
             </div>
             <!-- <div class="mb-2">Хийх ажилчид:</div> -->
 
@@ -116,13 +116,16 @@
           </v-col>
 
           <v-col cols="12">
-            <v-text-field
-              v-model="serviceToAdd.duration"
-              label="Хугацаа (минут)"
+            <v-select
+              v-model="serviceToAdd.category"
+              label="Ангилал"
+              :items="serviceCategories"
+              item-value="_id"
+              item-title="title"
               variant="outlined"
               hide-details
             >
-            </v-text-field>
+            </v-select>
           </v-col>
 
           <v-col cols="12">
@@ -247,7 +250,6 @@ const addService = async () => {
     console.log(err);
   }
 };
-
 
 onMounted(async () => {
   await fetchServices();

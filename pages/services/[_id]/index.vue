@@ -112,7 +112,7 @@
                 </div>
               </template>
 
-              <template v-slot:item.image="{ item }: any">
+              <!-- <template v-slot:item.image="{ item }: any">
                 <div class="pa-2">
                   <img
                     :src="item.image"
@@ -120,7 +120,7 @@
                     alt=""
                   />
                 </div>
-              </template>
+              </template> -->
 
               <template v-slot:item.duration="{ item }: any">
                 <div class="pa-2">
@@ -188,11 +188,11 @@
               v-model="variantToAdd.duration"
             ></v-text-field>
 
-            <v-text-field
+            <!-- <v-text-field
               variant="outlined"
               label="Зураг"
               v-model="variantToAdd.image"
-            ></v-text-field>
+            ></v-text-field> -->
           </v-container>
         </div>
 
@@ -259,12 +259,12 @@ const headers = ref<any>([
     align: "center",
     sortable: false,
   },
-  {
-    title: "Зураг",
-    value: "image",
-    align: "center",
-    sortable: false,
-  },
+  // {
+  //   title: "Зураг",
+  //   value: "image",
+  //   align: "center",
+  //   sortable: false,
+  // },
   {
     title: "Идэвхтэй эсэх",
     value: "isActive",
@@ -362,6 +362,7 @@ const addVariant = async () => {
     if (response.status === 201) {
       await fetchVariants();
       showAddVariant.value = false;
+      variantToAdd.value = {};
       toast.success("Амжилттай нэмэгдлээ");
     } else {
       console.log("jiijii");
