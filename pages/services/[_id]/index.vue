@@ -8,10 +8,11 @@
       >
         <v-tab value="service"> Үйлчилгээ </v-tab>
         <v-tab value="variants">Төрөл</v-tab>
+        <v-tab value="additionalPrices">Нэмэлт төлбөр</v-tab>
       </v-tabs>
 
       <v-tabs-window v-model="tab">
-        <v-tabs-window-item value="service">
+        <v-tabs-window-item value="service" style="min-height: 90vh">
           <div
             class="d-flex justify-center mb-4"
             style="font-size: 24px; font-weight: 450"
@@ -92,10 +93,13 @@
             </v-col>
           </v-row>
 
-            <v-btn style="position: fixed; bottom: 5%; right: 5%;" color="#101828" @click="updateService() "
-              ><v-icon>mdi-content-save</v-icon>
-              <span class="ml-2">Хадгалах</span>
-            </v-btn>
+          <v-btn
+            style="position: fixed; bottom: 5%; right: 5%"
+            color="#101828"
+            @click="updateService()"
+            ><v-icon>mdi-content-save</v-icon>
+            <span class="ml-2">Хадгалах</span>
+          </v-btn>
         </v-tabs-window-item>
 
         <v-tabs-window-item value="variants">
@@ -130,8 +134,10 @@
 
               <template v-slot:item.isActive="{ item }: any">
                 <div class="pa-2">
-                  <v-icon  v-if="item.isActive" color="green">mdi-check-circle-outline</v-icon>
-                  <v-icon  v-else color="red">mdi-close-circle-outline</v-icon>
+                  <v-icon v-if="item.isActive" color="green"
+                    >mdi-check-circle-outline</v-icon
+                  >
+                  <v-icon v-else color="red">mdi-close-circle-outline</v-icon>
                 </div>
               </template>
 
@@ -160,6 +166,74 @@
               >
             </div>
           </v-container>
+        </v-tabs-window-item>
+
+        <v-tabs-window-item value="additionalPrices" style="min-height: 90vh">
+          <div class="d-flex align-center">
+            <div class="mr-3" style="font-weight: 550; font-size: 18px">
+              Нэмэлт төлбөр байгаа эсэх:
+            </div>
+            <v-switch
+              color="#101828"
+              hide-details
+              v-model="service.hasAdditionalPrice"
+            >
+            </v-switch>
+          </div>
+
+          <v-container>
+            <v-row>
+              <v-col cols="3" v-for="addPrice in service.additionalPrices">
+                <v-card
+                :disabled="!service.hasAdditionalPrice"
+                  height="220"
+                  class="pa-4 d-flex justify-center align-center flex-column"
+                >
+                  <div style="width: 100%" align="center">
+                    <img
+                      style="height: 60px; width: 60px"
+                      :src="addPrice?.workerLevel.image"
+                      alt=""
+                    />
+                    <div class="my-1">{{ addPrice?.workerLevel.level }}</div>
+                    <v-text-field
+                      density="compact"
+                      style="width: 80%"
+                      hide-details
+                      variant="outlined"
+                      v-model="addPrice.additionalPrice"
+                      @keyup.enter="updateService()"
+                    >
+                    </v-text-field>
+                  </div>
+
+                  <div class="d-flex justify-space-around mt-2">
+                    <!-- <v-btn size="small" icon="mdi-content-save" class="mx-2"></v-btn> -->
+                    <!-- <v-btn size="small" icon="mdi-delete" class="mx-2"></v-btn> -->
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+
+          <div
+            style="position: fixed; bottom: 5%; right: 5%"
+            class="d-flex justify-space-between"
+          >
+            <v-btn
+              @click="showAddPriceDialog = true"
+              class="mr-4"
+              variant="outlined"
+            >
+              <v-icon>mdi-plus</v-icon>
+              <span class="ml-2">Нэмэх</span>
+            </v-btn>
+
+            <v-btn color="#101828" @click="updateService()"
+              ><v-icon>mdi-content-save</v-icon>
+              <span class="ml-2">Хадгалах</span>
+            </v-btn>
+          </div>
         </v-tabs-window-item>
       </v-tabs-window>
     </div>
@@ -258,9 +332,11 @@
               v-model="variantToUpdate.duration"
             ></v-text-field>
             <div class="d-flex align-center">
-              <div style="font-weight: 500; font-size: 18px;" class="mr-3">Идэвхтэй эсэх:</div>
+              <div style="font-weight: 500; font-size: 18px" class="mr-3">
+                Идэвхтэй эсэх:
+              </div>
               <v-switch
-              color="#101828"
+                color="#101828"
                 hide-details
                 v-model="variantToUpdate.isActive"
               ></v-switch>
@@ -275,6 +351,45 @@
         </div>
       </v-container>
     </v-navigation-drawer>
+
+    <v-dialog v-model="showAddPriceDialog" width="500">
+      <v-card class="pa-4">
+        <div class="text-center mb-4" style="font-weight: 550; font-size: 20px">
+          Нэмэлт төлбөр нэмэх
+        </div>
+        <v-select
+          variant="outlined"
+          label="Зэрэг"
+          v-model="addingPrice.workerLevel"
+          :items="workerLevels"
+          item-value="_id"
+          item-title="level"
+        >
+        </v-select>
+
+        <v-text-field
+          variant="outlined"
+          type="Number"
+          label="Нэмэлт төлбөр"
+          v-model="addingPrice.additionalPrice"
+        >
+        </v-text-field>
+
+        <div class="d-flex justify-end">
+          <v-btn
+            color="#101828"
+            @click="
+              service.additionalPrices.push(addingPrice);
+              updateService();
+              addingPrice = {};
+              showAddPriceDialog = false;
+            "
+          >
+            <v-icon>mdi-plus</v-icon> Нэмэх</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -308,6 +423,9 @@ const showAddVariant = ref<any>(false);
 const showUpdateVariant = ref<any>(false);
 const variantToAdd = ref<any>({});
 const variantToUpdate = ref<any>({});
+const showAddPriceDialog = ref<any>(false);
+const addingPrice = ref<any>({});
+const workerLevels = ref<any>([]);
 
 const headers = ref<any>([
   {
@@ -473,14 +591,25 @@ const updateVariant = async () => {
   }
 };
 
-
-
+const fetchLevels = async () => {
+  try {
+    const response = await axios.post(`${baseURL}/workerLevels/all`, {});
+    if (response.status === 200) {
+      workerLevels.value = response.data.rows;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 onMounted(async () => {
   await fetchService();
   await fetchWorkers();
   await fetchCategories();
   await fetchVariants();
+  await fetchLevels();
 });
 </script>
 
