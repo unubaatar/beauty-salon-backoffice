@@ -234,7 +234,12 @@
                           v-for="service in getResvervedTime(schedule, time)
                             .services"
                         >
-                          {{ service.title }}
+                          <div>
+                            {{ service.service.title }}
+                            <span v-if="service?.variant">
+                              - {{ service?.variant.title }}</span
+                            >
+                          </div>
                         </div>
                       </div>
                     </v-card>
