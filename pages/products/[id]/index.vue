@@ -111,9 +111,36 @@
           </v-container>
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="two"> </v-tabs-window-item>
+        <v-tabs-window-item value="two">
+          <v-container class="mt-4">
+            <div class="d-flex justify-end">
+              <v-btn @click="showAddVariant = true" color="#101828">
+                <v-icon class="ml-2">mdi-content-save</v-icon>Нэмэх</v-btn
+              >
+            </div>
+          </v-container>
+        </v-tabs-window-item>
       </v-tabs-window>
     </div>
+
+    <v-navigation-drawer
+      location="right"
+      temporary
+      width="500"
+      v-model="showAddVariant"
+    >
+      <v-container class="px-8">
+        <div class="text-center my-6" style="font-size: 20px; font-weight: 550">
+          Төрөл нэмэх
+        </div>
+        
+        
+          <v-text-field variant="outlined" label="Нэр"></v-text-field>
+          <v-text-field variant="outlined" label="Нэр"></v-text-field>
+          <v-text-field variant="outlined" label="Нэр"></v-text-field>
+        </v-container
+      >
+    </v-navigation-drawer>
 
     <v-dialog width="500" v-model="showImage">
       <v-card class="pa-6" rounded="lg">
@@ -162,6 +189,9 @@ const categories = ref<any>([]);
 const count = ref<any>(0);
 const showImage = ref<any>(false);
 const addingImage = ref<any>("");
+const showAddVariant = ref<any>(false);
+const variantToCreate = ref<any>({});
+const varianToUpdate = ref<any>({});
 
 const fetchProduct = async () => {
   try {
@@ -179,19 +209,22 @@ const fetchProduct = async () => {
   }
 };
 
-const updateProduct = async() => {
-    try {
-        const response = await axios.post(`${baseURL}/products/update`, product.value);
-        if(response.status === 200) {
-            await fetchProduct();
-            toast.success("Амжилттай шинэчлэгдлээ");
-        } else {    
-            console.log("jiijii");
-        }
-    } catch(err) {
-        console.log(err);
+const updateProduct = async () => {
+  try {
+    const response = await axios.post(
+      `${baseURL}/products/update`,
+      product.value
+    );
+    if (response.status === 200) {
+      await fetchProduct();
+      toast.success("Амжилттай шинэчлэгдлээ");
+    } else {
+      console.log("jiijii");
     }
-}
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const fetchCategories = async () => {
   try {
