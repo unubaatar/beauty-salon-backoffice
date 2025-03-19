@@ -73,6 +73,7 @@
             ><v-select
               variant="outlined"
               hide-details
+              v-model="productToCreate.category"
               label="Ангилал"
               :items="categories"
               item-value="_id"
@@ -114,6 +115,7 @@
         <div
           class="d-flex justify-end"
           @click="
+            addingImage = '';
             productToCreate.images.push(addingImage);
             showImageDialog = false;
           "
