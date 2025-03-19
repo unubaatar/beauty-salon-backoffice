@@ -93,6 +93,20 @@
             </v-text-field
           ></v-col>
 
+          <v-col cols="4"
+                ><v-select
+                  v-model="productToCreate.optionTypes"
+                  variant="outlined"
+                  hide-details
+                  label="Нөөц"
+                  :items="options"
+                  item-value="_id"
+                  item-title="name"
+                  multiple
+                >
+                </v-select
+              ></v-col>
+
           <v-col cols="12"
             ><v-textarea
               v-model="productToCreate.description"
@@ -115,9 +129,10 @@
         <div
           class="d-flex justify-end"
           @click="
-            addingImage = '';
+        
             productToCreate.images.push(addingImage);
             showImageDialog = false;
+            addingImage = '';
           "
         >
           <v-btn>Нэмэх</v-btn>
@@ -154,6 +169,7 @@ const categories = ref<any>([]);
 const count = ref<any>(0);
 const showImageDialog = ref<any>(false);
 const addingImage = ref<any>("");
+const options  =ref<any>([]);
 
 const fetchCategories = async () => {
   try {
@@ -186,8 +202,22 @@ const createProduct = async () => {
   }
 };
 
+const fetchOptions = async() => {
+  try {
+    const response = await axios.post(`${baseURL}/productOptions/all`, {});
+    if (response.status === 200) {
+      options.value = response.data.rows;
+    } else {
+      console.log("jiijii");
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 onMounted(async () => {
   await fetchCategories();
+  await fetchOptions();
 });
 </script>
 
