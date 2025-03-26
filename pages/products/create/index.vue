@@ -93,20 +93,6 @@
             </v-text-field
           ></v-col>
 
-          <v-col cols="4"
-                ><v-select
-                  v-model="productToCreate.optionTypes"
-                  variant="outlined"
-                  hide-details
-                  label="Нөөц"
-                  :items="options"
-                  item-value="_id"
-                  item-title="name"
-                  multiple
-                >
-                </v-select
-              ></v-col>
-
           <v-col cols="12"
             ><v-textarea
               v-model="productToCreate.description"
@@ -202,22 +188,9 @@ const createProduct = async () => {
   }
 };
 
-const fetchOptions = async() => {
-  try {
-    const response = await axios.post(`${baseURL}/productOptions/all`, {});
-    if (response.status === 200) {
-      options.value = response.data.rows;
-    } else {
-      console.log("jiijii");
-    }
-  } catch(err) {
-    console.log(err);
-  }
-}
 
 onMounted(async () => {
   await fetchCategories();
-  await fetchOptions();
 });
 </script>
 

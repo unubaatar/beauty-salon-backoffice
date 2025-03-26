@@ -85,7 +85,7 @@ definePageMeta({
 });
 
 import axios from "axios";
-import moment, { duration, weekdays } from "moment";
+import moment  from "moment";
 import { useDisplay } from "vuetify";
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";

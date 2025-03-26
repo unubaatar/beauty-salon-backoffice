@@ -135,11 +135,6 @@ const sideBarMenuItems = ref<any>([
         logo: "mdi-shape-plus",
         link: "/productCategories",
       },
-      {
-        title: "Ангилалын төрлүүд",
-        logo: "mdi-clipboard-list",
-        link: "/productOptions",
-      },
     ],
   },
 ]);

@@ -97,20 +97,6 @@
                 </v-text-field
               ></v-col>
 
-              <v-col cols="4"
-                ><v-select
-                  v-model="product.optionTypes"
-                  variant="outlined"
-                  hide-details
-                  label="Нөөц"
-                  :items="optionTypes"
-                  item-value="_id"
-                  item-title="name"
-                  multiple
-                >
-                </v-select
-              ></v-col>
-
               <v-col cols="12"
                 ><v-textarea
                   style="height: 400px !important"
@@ -148,7 +134,7 @@
 
               <template v-slot:item.name="{ item }: any">
                 <div class="pa-4">
-                  <span v-for="option in item.options"> {{ option.name + " " }}</span>
+                  {{ item.title }}
                 </div>
               </template>
 
@@ -218,19 +204,27 @@
           variant="outlined"
           label="Зарагдах үнэ"
         ></v-text-field>
-        <div style="font-weight: 550; font-size: 20px" class="text-center mb-4">
-          Төрлийн сонголтууд
-        </div>
 
-        <div v-for="(option, index) in varianToUpdate.options">
-          <v-text-field
-            v-if="option.name"
-            variant="outlined"
-            v-model="option.name"
-            :label="option.optionType.name"
-          >
-          </v-text-field>
-        </div>
+        <div class="mx-2 mb-2" style="font-weight: 550">Зураг</div>
+        <v-row>
+          <v-col cols="4" style="aspect-ratio: 1">
+            <v-btn
+              variant="outlined"
+              color="#101828"
+              style="height: 100%; width: 100%"
+              @click="showVariantUpdateImage = true"
+            >  <v-icon>mdi-plus</v-icon> </v-btn
+          ></v-col>
+          <v-col cols="4" v-for="img in varianToUpdate.images">
+            <img
+              :src="img"
+              alt=""
+              style="aspect-ratio: 1; width: 100%; object-fit: cover"
+            />
+          </v-col>
+        </v-row>  
+        <div class="d-flex mt-2 align-center"> <span class="mr-2">Идэвхтэй эсэх: </span>    <v-switch hide-details v-model="varianToUpdate.isActive" color="#101828"></v-switch></div>
+    
         <div class="mt-4 d-flex justify-end">
           <v-btn color="#101828" @click="updateProductVariant()">Засах</v-btn>
         </div>
@@ -263,19 +257,26 @@
           variant="outlined"
           label="Зарагдах үнэ"
         ></v-text-field>
-        <div style="font-weight: 550; font-size: 20px" class="text-center mb-4">
-          Төрлийн сонголтууд
-        </div>
 
-        <div v-for="(option, index) in product.optionTypes">
-          <v-text-field
-            v-if="variantToCreate.options[index]?.name"
-            variant="outlined"
-            :label="option.name"
-            v-model="variantToCreate.options[index].name"
-          >
-          </v-text-field>
-        </div>
+        <div class="mx-2 mb-2" style="font-weight: 550">Зураг</div>
+        <v-row>
+          <v-col cols="4" style="aspect-ratio: 1">
+            <v-btn
+              variant="outlined"
+              color="#101828"
+              style="height: 100%; width: 100%"
+              @click="showAddImageVariant = true"
+            >  <v-icon>mdi-plus</v-icon> </v-btn
+          ></v-col>
+          <v-col cols="4" v-for="img in variantToCreate.images">
+            <img
+              :src="img"
+              alt=""
+              style="aspect-ratio: 1; width: 100%; object-fit: cover"
+            />
+          </v-col>
+        </v-row>
+
         <div class="mt-4 d-flex justify-end">
           <v-btn color="primary" @click="createProductVariant()">Нэмэх</v-btn>
         </div>
@@ -294,6 +295,52 @@
               product.images.push(addingImage);
               showImage = false;
               addingImage = '';
+            "
+            color="#101828"
+            >Нэмэх</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog width="500" v-model="showAddImageVariant">
+      <v-card class="pa-6" rounded="lg">
+        <div class="text-center mb-4" style="font-weight: 550">
+          Нэмэх зурагны URL-аа оруулна уу
+        </div>
+        <v-text-field
+          variant="outlined"
+          v-model="variantAddingImage"
+        ></v-text-field>
+        <div class="d-flex justify-end">
+          <v-btn
+            @click="
+              variantToCreate.images.push(variantAddingImage);
+              showAddImageVariant = false;
+              variantAddingImage = '';
+            "
+            color="#101828"
+            >Нэмэх</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog width="500" v-model="showVariantUpdateImage">
+      <v-card class="pa-6" rounded="lg">
+        <div class="text-center mb-4" style="font-weight: 550">
+          Нэмэх зурагны URL-аа оруулна уу
+        </div>
+        <v-text-field
+          variant="outlined"
+          v-model="variantAddingImage"
+        ></v-text-field>
+        <div class="d-flex justify-end">
+          <v-btn
+            @click="
+              varianToUpdate.images.push(variantAddingImage);
+              showVariantUpdateImage = false;
+              variantAddingImage = '';
             "
             color="#101828"
             >Нэмэх</v-btn
@@ -329,18 +376,26 @@ const product = ref<any>({});
 const categories = ref<any>([]);
 const count = ref<any>(0);
 
-const optionTypes = ref<any>([]);
 const showImage = ref<any>(false);
 const addingImage = ref<any>("");
+const variantAddingImage = ref<any>("");
 const showAddVariant = ref<any>(false);
 const showUpdateDialog = ref<any>(false);
+const showAddImageVariant = ref<any>(false);
+const showVariantUpdateImage = ref<any>(false);
+
 const variantToCreate = ref({
   title: "",
-  price: 0,
-  sellPrice: 0,
-  options: [] as { name: String; _id: String }[],
+  price: "",
+  sellPrice: "",
+  images: [] as any,
 });
-const varianToUpdate = ref<any>({});
+const varianToUpdate = ref<any>({
+  title: "",
+  price: "",
+  sellPrice: "",
+  images: [] as any,
+});
 
 const headers = ref<any>([
   {
@@ -454,9 +509,9 @@ const createProductVariant = async () => {
     if (response.status === 201) {
       variantToCreate.value = {
         title: "",
-        sellPrice: 0,
-        price: 0,
-        options: [],
+        sellPrice: "",
+        price: "",
+        images: [],
       };
       showAddVariant.value = false;
       toast.success("Амжилттай");
@@ -469,26 +524,16 @@ const createProductVariant = async () => {
   }
 };
 
-const updateProductVariant = async() => {
+const updateProductVariant = async () => {
   try {
-    const response = await axios.post(`${baseURL}/productVariants/update` , varianToUpdate.value);
-    if(response.status === 200) {
+    const response = await axios.post(
+      `${baseURL}/productVariants/update`,
+      varianToUpdate.value
+    );
+    if (response.status === 200) {
       showUpdateDialog.value = false;
       varianToUpdate.value = {};
       toast.success("Амжилттай");
-    } else {  
-      console.log("jiijii");
-    }
-  } catch(err) {
-    console.log(err);
-  }
-}
-
-const fetchOptionTypes = async () => {
-  try {
-    const response = await axios.post(`${baseURL}/productOptions/all`, {});
-    if (response.status === 200) {
-      optionTypes.value = response.data.rows;
     } else {
       console.log("jiijii");
     }
@@ -500,12 +545,6 @@ const fetchOptionTypes = async () => {
 onMounted(async () => {
   await fetchProduct();
   await fetchCategories();
-  await fetchOptionTypes();
-
-  variantToCreate.value.options = optionTypes.value.map((option: any) => ({
-    optionType: option._id,
-    name: " ",
-  }));
 });
 </script>
 

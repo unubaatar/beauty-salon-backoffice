@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-if="checkAuth()"
+      v-if="checkTokenValue"
       class="d-flex justify-center"
       style="margin-left: 300px; position: sticky; top: 0; z-index: 10"
     >
@@ -62,18 +62,38 @@
 </template>
 
 <script setup lang="ts">
+import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
+const config = useRuntimeConfig();
+const baseURL = config.public.baseURL;
+
+
 
 const router = useRouter();
 const route = useRoute();
 const user = ref<any>({});
+const checkTokenValue = ref<any>(false);
 
-const checkAuth = () => {
-  if (localStorage.getItem("userId")) {
-    return true;
+const checkAuth = async () => {
+  const token = localStorage.getItem('token');
+  if(!token) {
+    localStorage.clear();
+    checkTokenValue.value =  false;
+  };
+  const response = await axios.post(`${baseURL}/users/checkToken` , {
+    token: token
+  });
+  if(response.status === 200) {
+    checkTokenValue.value =  response.data.valid;
+    if(!checkTokenValue.value) {
+        localStorage.clear();
+    }  
+  } else {
+    console.log("jiijii");
   }
-  return false;
+
 };
 
 const logout = () => {
@@ -94,7 +114,8 @@ const formatRoles = (role: any) => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await checkAuth();
   user.value.avatar = localStorage.getItem("avatar");
   user.value.userId = localStorage.getItem("userId");
   user.value.role = localStorage.getItem("role");

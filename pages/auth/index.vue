@@ -103,6 +103,7 @@ const login = async() => {
       localStorage.setItem('avatar' , response.data.user.avatar);
       localStorage.setItem("role" , response.data.user.role);
       localStorage.setItem("userName" , response.data.user.firstName);
+      localStorage.setItem("token" , response.data.token);
       window.location.reload();
       router.push("/dashboard");
     } else {
