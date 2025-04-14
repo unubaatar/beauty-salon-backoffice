@@ -277,6 +277,8 @@
           </v-col>
         </v-row>
 
+        {{ variantToCreate }}
+
         <div class="mt-4 d-flex justify-end">
           <v-btn color="primary" @click="createProductVariant()">Нэмэх</v-btn>
         </div>
@@ -384,17 +386,11 @@ const showUpdateDialog = ref<any>(false);
 const showAddImageVariant = ref<any>(false);
 const showVariantUpdateImage = ref<any>(false);
 
-const variantToCreate = ref({
-  title: "",
-  price: "",
-  sellPrice: "",
-  images: [] as any,
+const variantToCreate = ref<any>({
+  images: []
 });
 const varianToUpdate = ref<any>({
-  title: "",
-  price: "",
-  sellPrice: "",
-  images: [] as any,
+  images: []
 });
 
 const headers = ref<any>([
@@ -507,12 +503,7 @@ const createProductVariant = async () => {
       query
     );
     if (response.status === 201) {
-      variantToCreate.value = {
-        title: "",
-        sellPrice: "",
-        price: "",
-        images: [],
-      };
+      variantToCreate.value = {};
       showAddVariant.value = false;
       toast.success("Амжилттай");
       await fetchProduct();
