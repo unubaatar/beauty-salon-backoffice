@@ -90,7 +90,7 @@
 
         <template v-slot:item.action="{ item }: any">
           <div class="pa-4">
-            <v-btn icon="mdi-pencil" variant="text"></v-btn>
+            <v-btn icon="mdi-pencil" variant="text" @click="router.push(`/orders/${item._id}`)"></v-btn>
           </div>
         </template>
       </v-data-table>
