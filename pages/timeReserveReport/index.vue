@@ -1,0 +1,238 @@
+<template>
+  <v-container width="1440">
+    <div class="d-flex justify-space-between">
+      <div class="d-flex">
+        <v-btn
+          prepend-icon="mdi-clock"
+          variant="outlined"
+          color="#101828"
+          @click="showDatePicker = true"
+          >Өдөр сонгох</v-btn
+        >
+        <div class="d-flex" style="font-weight: 550; font-size: 20px">
+          <div class="ml-8">
+            <span class="ml-2 mr-2"> {{ formatDate(startDate) }}</span>
+          </div>
+          -
+          <div>
+            <span class="mr-2 ml-1"> {{ formatDate(endDate) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="ml-16 d-flex justify-space-between"
+        style="font-weight: 550; font-size: 20px"
+      >
+        <div class="mr-8" style="font-weight: 400">
+          Нийт үйлчилгээ:
+          <span class="ml-1" style="font-weight: 550">{{ totalServices }}</span>
+        </div>
+
+        <div class="mr-8"  style="font-weight: 400">
+          Нийт орлого:
+          <span class="ml-1" style="font-weight: 550"
+            >{{ totalAmount?.toLocaleString() }}₮</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <v-data-table
+      class="mt-8"
+      hide-default-footer
+      :headers="headers"
+      :items="reportData"
+    >
+      <template v-slot:item.seq="{ index }: any">
+        <div class="pa-4" style="font-size: 16px; font-weight: 550">
+          {{ index + 1 }}
+        </div>
+      </template>
+
+      <template v-slot:item.worker="{ item }: any">
+        <div class="pa-4 d-flex align-center">
+          <img
+            :src="item.worker.avatar"
+            style="
+              border-radius: 50%;
+              width: 48px;
+              height: 48px;
+              object-fit: cover;
+            "
+            alt=""
+          />
+          <div class="ml-4" style="font-size: 16px; font-weight: 550">
+            {{ item.worker.firstName }}
+          </div>
+        </div>
+      </template>
+
+      <template v-slot:item.totalTimeReserve="{ item }: any">
+        <div class="pa-4" style="font-size: 18px; font-weight: 550">
+          {{ item.totalTimeReserve }}
+        </div>
+      </template>
+
+      <template v-slot:item.totalWorkedDuration="{ item }: any">
+        <div class="pa-4" style="font-size: 18px; font-weight: 550">
+          {{ (item.totalWOrkedDuration / 60).toFixed(2) }}
+          <span class="ml-1">цаг</span>
+        </div>
+      </template>
+
+      <template v-slot:item.totalServices="{ item }: any">
+        <div class="pa-4" style="font-size: 18px; font-weight: 550">
+          {{ item.totalServiceCount }}
+        </div>
+      </template>
+
+      <template v-slot:item.totalIncome="{ item }: any">
+        <div class="pa-4" style="font-size: 18px; font-weight: 550">
+          {{ item.totalIncome?.toLocaleString() }}₮
+        </div>
+      </template>
+    </v-data-table>
+
+    <v-dialog v-model="showDatePicker" max-width="800">
+      <v-card class="pa-8">
+        <div class="d-flex">
+          <v-date-picker header="Эхлэх огноо" v-model="startDate">
+            <!-- <template #title></template> -->
+          </v-date-picker>
+
+          <v-date-picker
+            header="Дуусах огноо"
+            v-model="endDate"
+          ></v-date-picker>
+        </div>
+
+        <div class="d-flex justify-end">
+          <v-btn
+            color="#101828"
+            @click="
+              showDatePicker = false;
+              fetchData();
+            "
+            >Сонгох</v-btn
+          >
+        </div>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>
+
+<script lang="ts" setup>
+definePageMeta({
+  layout: "layout",
+  middleware: "auth",
+});
+
+import axios from "axios";
+import { useDisplay } from "vuetify";
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import moment from "moment";
+const { mdAndUp } = useDisplay();
+
+const router = useRouter();
+const route = useRoute();
+
+const config = useRuntimeConfig();
+const baseURL = config.public.baseURL;
+
+const showDatePicker = ref(false);
+const reportData = ref<any>([]);
+
+const startDate = ref<any>();
+const endDate = ref<any>();
+
+const totalAmount = ref<any>();
+const totalServices = ref<any>();
+
+const headers = ref<any>([
+  {
+    title: "№",
+    value: "seq",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+  {
+    title: "Ажилтан",
+    value: "worker",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+  {
+    title: "Нийт захиалга",
+    value: "totalTimeReserve",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+  {
+    title: "Нийт үйлчилгээ",
+    value: "totalServices",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+  {
+    title: "Нийт ажилласан цаг",
+    value: "totalWorkedDuration",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+  {
+    title: "Нийт орлого",
+    value: "totalIncome",
+    align: "center",
+    width: "50px",
+    sortable: false,
+  },
+]);
+
+const formatDate = (date: string) => {
+  return moment(date).format("YYYY-MM-DD");
+};
+
+const fetchData = async () => {
+  try {
+    const query = {
+      dateFilter: [startDate.value, endDate.value],
+    };
+    const response = await axios.post(
+      `${baseURL}/timeReserves/getByUserReport`,
+      query
+    );
+    if (response.status === 200) {
+      reportData.value = response.data.rows;
+      totalAmount.value = response.data.totalIncome; 
+      totalServices.value = response.data.totalServiceCount; 
+    } else {
+      console.log("jiiji");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(async () => {
+  const now = new Date();
+  startDate.value = new Date(now.getFullYear(), now.getMonth(), 1)
+  endDate.value = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+
+  await fetchData();
+});
+</script>
+
+<style scoped>
+:deep() .v-picker-title {
+  display: none;
+}
+</style>

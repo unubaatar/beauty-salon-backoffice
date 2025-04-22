@@ -115,7 +115,7 @@ const sideBarMenuItems = ref([
         allowedRoles: ["admin", "manager"],
       },
       {
-        title: "Цаг захиалга",
+        title: "Цаг товлолт",
         logo: "mdi-timetable",
         link: "/timeRequests",
         allowedRoles: ["admin", "manager"],
@@ -149,23 +149,24 @@ const sideBarMenuItems = ref([
     title: "Report",
     items: [
       {
-        title: "Үйлчилгээний цаг захиалга",
-        logo: "mdi-cart",
-        link: "/orders",
+        title: "Ажилтан",
+        logo: "mdi-chart-box",
+        link: "/timeReserveReport",
         allowedRoles: ["admin", "manager"],
       },
       {
-        title: "Бүтээгдэхүүн борлуулалт",
-        logo: "mdi-lipstick",
-        link: "/products",
-        allowedRoles: ["admin", "seller"],
-      },
-      {
-        title: "Орлогын тайлан",
-        logo: "mdi-shape-plus",
-        link: "/productCategories",
+        title: "Үйлчилгээ",
+        logo: "mdi-chart-box",
+        link: "/serviceReport",
         allowedRoles: ["admin", "seller", "manager"],
       },
+      {
+        title: "Бүтээгдэхүүн",
+        logo: "mdi-chart-box",
+        link: "/productReport",
+        allowedRoles: ["admin", "seller"],
+      },
+
     ],
   },
 ]);
