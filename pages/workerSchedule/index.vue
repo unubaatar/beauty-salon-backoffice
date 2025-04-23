@@ -1,6 +1,8 @@
 <template>
   <v-container max-width="1440">
-    <v-row>
+
+    <div class="text-center" style="font-size: 28px; font-weight: 550;">Өнөөдөрийн захиалгууд</div>
+    <v-row class="mt-4">
       <v-col
         v-for="timeReserve in schedule.timeReserves"
         rounded="lg"
@@ -15,22 +17,19 @@
 
           <article class="d-flex justify-space-between">
             <div class="mt-2">
-            <span class="mr-1">{{
-              moment(timeReserve.startDate).format("HH:mm")
-            }}</span>
-            -
-            <span class="ml-1">{{
-              moment(timeReserve.endDate).format("HH:mm")
-            }}</span>
-          </div>
+              <span class="mr-1">{{
+                moment(timeReserve.startDate).format("HH:mm")
+              }}</span>
+              -
+              <span class="ml-1">{{
+                moment(timeReserve.endDate).format("HH:mm")
+              }}</span>
+            </div>
 
-
-          <v-chip size="small">
-            {{ timeReserve.state }}
-          </v-chip>
+            <v-chip size="small">
+              {{ timeReserve.state }}
+            </v-chip>
           </article>
-
-
 
           <article class="d-flex mt-2 align-center">
             <img
@@ -89,7 +88,8 @@
                         service.variant
                           ? service.variant.duration
                           : service.service.duration
-                      }} мин
+                      }}
+                      мин
                     </p>
                   </div>
                 </article>
@@ -113,6 +113,10 @@ import { useDisplay } from "vuetify";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
+import { io } from "socket.io-client";
 
 const router = useRouter();
 const route = useRoute();
@@ -121,13 +125,31 @@ const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
 
 const schedule = ref<any>([]);
+const userId = ref<any>(null);
+
+let socketUpdate: any;
+let socketCreate: any;
+
+const timeReserveUpdatedHandler = (updatedReserve: any) => {
+  console.log("Updated:", updatedReserve);
+  toast.success("Төлөв солигдлоо");
+  fetchSchedule();
+};
+
+const timeReserveCreatedHandler = (createdReserve: any) => {
+  console.log("Created:", createdReserve);
+  toast.success("Шинэ цаг амжилттай бүртгэгдлээ");
+  fetchSchedule();
+};
 
 const fetchSchedule = async () => {
   try {
+    const workerId = localStorage.getItem("userId");
     const now = moment();
     const formattedDate = now.format("YYYY-MM-DD");
     const query = {
       dateTitle: formattedDate,
+      worker: workerId,
     };
     const response = await axios.post(
       `${baseURL}/timeReserves/getbyWorker`,
@@ -144,7 +166,32 @@ const fetchSchedule = async () => {
 };
 
 onMounted(async () => {
+  userId.value = localStorage.getItem("userId");
+
+  if (!userId.value) return;
+
+  socketUpdate = io("http://localhost:4004/websocket/timeReserveUpdate");
+  socketUpdate.on("connect", () => {
+    console.log("[Update] connected");
+    socketUpdate.emit("join", userId.value);
+  });
+  socketUpdate.off("timeReserveUpdated", timeReserveUpdatedHandler);
+  socketUpdate.on("timeReserveUpdated", timeReserveUpdatedHandler);
+
+  socketCreate = io("http://localhost:4004/websocket/timeReserveCreate");
+  socketCreate.on("connect", () => {
+    console.log("[Create] connected");
+    socketCreate.emit("join", userId.value);
+  });
+  socketCreate.off("timeReserveCreated", timeReserveCreatedHandler);
+  socketCreate.on("timeReserveCreated", timeReserveCreatedHandler);
+
   await fetchSchedule();
+});
+
+onUnmounted(() => {
+  socketUpdate?.off("timeReserveUpdated", timeReserveUpdatedHandler);
+  socketCreate?.off("timeReserveCreated", timeReserveCreatedHandler);
 });
 </script>
 

@@ -99,7 +99,6 @@ const checkAuth = async () => {
   } else {
     console.log("jiijii");
   }
-
 };
 
 const logout = () => {
