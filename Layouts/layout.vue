@@ -1,46 +1,110 @@
 <template>
   <v-layout>
     <v-navigation-drawer
-     width="300"
-      permanent
-      disable-route-watcher
+      app
+      :width="drawerWidth"
+      :mini-variant="isMini"
+      :permanent="true"
+      :temporary="isMobile"
       floating
-      open-delay="false"
-      style="height: 100vh"
-      persistent
+      class="bg-dark"
     >
       <v-card
-        class="pa-4 d-flex flex-column justify-space-between"
-        style="width: 100%; height: 100%; background-color: #101828; border-top-right-radius: 24px; border-bottom-right-radius: 24px;"
+        class="pa-4 d-flex flex-column"
+        style="
+          height: 100%;
+          background-color: #101828;
+          border-top-right-radius: 24px;
+          border-bottom-right-radius: 24px;
+          overflow-y: scroll;
+        "
       >
         <div>
-          <div>
+          <div class="d-flex align-center justify-space-between mb-4">
             <img
-              style="width: 48px; height: 48px"
+              v-if="!isMini"
+              style="width: 40px; height: 40px"
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSIIWju1ABYrb5DTkZ8mbDcaAekrgKnjmf0CA&s"
               alt="logo"
             />
+            <v-btn
+              icon
+              variant="text"
+              color="white"
+              size="small"
+              
+              @click="isCollapsed = !isCollapsed"
+            >
+              <v-icon>mdi-menu</v-icon>
+            </v-btn>
+          </div>
           </div>
 
-          <div v-if="isMounted" style="color: white">
+          <v-expansion-panels
+            v-if="isMounted  && !isMini"
+            variant="accordion"
+            multiple
+            class="bg-dark"
+            style="color: white"
+          >
+            <v-expansion-panel
+              v-for="category in filteredMenuItems"
+              :key="category.title"
+              elevation="0"
+              class="bg-dark"
+            >
+              <v-expansion-panel-title
+                class="text-subtitle-2 font-weight-medium"
+              >
+                <template v-if="showText">
+                  <div style="color: white; font-size: 16px">
+                    {{ category.title }}
+                  </div>
+                </template>
+                <template v-else>
+                  <v-icon style="color: white">mdi-folder</v-icon>
+                </template>
+              </v-expansion-panel-title>
+
+              <v-expansion-panel-text class="pl-0">
+                <div
+                  v-for="item in category.items"
+                  :key="item.title"
+                  class="pa-2 sideBarItem d-flex align-center"
+                  style="cursor: pointer; border-radius: 4px"
+                  :style="checkRoute(item.link) ? 'background-color: #0d0d0d ': ''"
+                  @click="goToLink(item.link)"
+                >
+                  <v-icon style="color: white">{{ item.logo }}</v-icon>
+                  <span class="ml-3" v-if="showText" style="color: white">{{
+                    item.title
+                  }}</span>
+                </div>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+
+
+          <div v-if="isMounted && isMini" style="color: white">
             <div v-for="category in filteredMenuItems" :key="category.title">
-              <div class="mt-4 mb-2 ml-2">
+              <div
+                v-if="showText"
+                class="mt-4 mb-2 ml-2 text-subtitle-2 font-weight-medium"
+              >
                 {{ category.title }}
               </div>
               <div
                 v-for="item in category.items"
                 :key="item.title"
-                class="pa-2 sideBarItem"
+                class="pa-2 sideBarItem d-flex align-center"
                 style="cursor: pointer; border-radius: 4px"
                 @click="goToLink(item.link)"
               >
                 <v-icon>{{ item.logo }}</v-icon>
-                <span class="ml-2">{{ item.title }}</span>
+                <span class="ml-3" v-if="showText">{{ item.title }}</span>
               </div>
             </div>
-          </div>
         </div>
-
       </v-card>
     </v-navigation-drawer>
 
@@ -50,16 +114,25 @@
   </v-layout>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 
-const { mdAndUp } = useDisplay();
+const { mdAndUp, smAndDown } = useDisplay();
 const router = useRouter();
 
 const isMounted = ref(false);
 const userRole = ref<string | null>(null);
+const isCollapsed = ref(false);
+
+const isMobile = computed(() => smAndDown.value);
+const showText = computed(() => !isMobile.value && !isCollapsed.value);
+
+const drawerWidth = computed(() =>
+  isMobile.value || isCollapsed.value ? 72 : 280
+);
+const isMini = computed(() => isMobile.value || isCollapsed.value);
 
 onMounted(() => {
   userRole.value = localStorage.getItem("role");
@@ -74,7 +147,7 @@ const sideBarMenuItems = ref([
         title: "Хяналтын самбар",
         logo: "mdi-view-dashboard",
         link: "/dashboard",
-        allowedRoles: ["admin", "manager", "seller" , "worker"],
+        allowedRoles: ["admin", "manager", "seller", "worker"],
       },
     ],
   },
@@ -162,7 +235,6 @@ const sideBarMenuItems = ref([
         link: "/productReport",
         allowedRoles: ["admin", "seller"],
       },
-
     ],
   },
   {
@@ -175,15 +247,14 @@ const sideBarMenuItems = ref([
         allowedRoles: ["worker"],
       },
     ],
-  }
+  },
 ]);
 
 const filteredMenuItems = computed(() => {
   if (!userRole.value) return [];
-
   return sideBarMenuItems.value
-    .map(category => {
-      const filteredItems = category.items.filter(item =>
+    .map((category) => {
+      const filteredItems = category.items.filter((item) =>
         item.allowedRoles.includes(userRole.value!)
       );
       return {
@@ -191,8 +262,13 @@ const filteredMenuItems = computed(() => {
         items: filteredItems,
       };
     })
-    .filter(category => category.items.length > 0);
+    .filter((category) => category.items.length > 0);
 });
+
+const checkRoute = (link: any) => {
+  const currentPath = router.currentRoute.value.fullPath;
+  return currentPath === link;
+}
 
 const goToLink = (link: string) => {
   router.push(link);
@@ -202,5 +278,17 @@ const goToLink = (link: string) => {
 <style scoped>
 .sideBarItem:hover {
   background-color: #0d0d0d;
+}
+.bg-dark {
+  background-color: #101828 !important;
+}
+
+:deep() .v-expansion-panel-text__wrapper {  
+  padding: 0px !important;
+  padding-left: 16px !important;
+}
+
+:deep() .v-expansion-panel-title__icon {
+  color: white;
 }
 </style>

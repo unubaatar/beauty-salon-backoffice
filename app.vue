@@ -1,13 +1,15 @@
 <template>
   <div>
-    <div
+    <v-container max-width="1440" style="width: 100%;">
+      <div
       v-if="checkTokenValue"
       class="d-flex justify-center"
-      style="margin-left: 300px; position: sticky; top: 0; z-index: 10"
+      style="position: sticky; top: 0; z-index: 10"
+      :style="isMobile ? 'margin-left: 90px' : 'margin-left: 300px'"
     >
       <v-card
         style="
-          width: 100%;
+          width: 100% !important;
           height: 72px;
           max-width: 1440px;
           border-bottom-right-radius: 16px;
@@ -55,6 +57,9 @@
       </v-card>
     </div>
 
+    </v-container>
+
+
     <NuxtLayout>
       <NuxtPage class="pa-8" />
     </NuxtLayout>
@@ -65,16 +70,17 @@
 import axios from "axios";
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+const { mdAndUp, smAndDown } = useDisplay();
 
 const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
 
-
-
 const router = useRouter();
 const route = useRoute();
 const user = ref<any>({});
+
 const checkTokenValue = ref<any>(false);
+  const isMobile = computed(() => smAndDown.value);
 
 const checkAuth = async () => {
   const token = localStorage.getItem('token');
@@ -133,7 +139,7 @@ onMounted(async () => {
 }
 
 ::-webkit-scrollbar {
-    width: 12px; 
+    width: 6px; 
     height: 12px; 
 }
 
