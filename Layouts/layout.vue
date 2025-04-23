@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-navigation-drawer
-      width="300"
+     width="300"
       permanent
       disable-route-watcher
       floating
@@ -41,10 +41,6 @@
           </div>
         </div>
 
-        <div style="color: white; cursor: pointer" class="pa-2 sideBarItem">
-          <v-icon>mdi-cog</v-icon>
-          <span class="ml-2"> Settings</span>
-        </div>
       </v-card>
     </v-navigation-drawer>
 
@@ -78,7 +74,7 @@ const sideBarMenuItems = ref([
         title: "Хяналтын самбар",
         logo: "mdi-view-dashboard",
         link: "/dashboard",
-        allowedRoles: ["admin", "manager", "seller"],
+        allowedRoles: ["admin", "manager", "seller" , "worker"],
       },
     ],
   },
@@ -169,6 +165,17 @@ const sideBarMenuItems = ref([
 
     ],
   },
+  {
+    title: "Schedule",
+    items: [
+      {
+        title: "Цагийн хуваарь",
+        logo: "mdi-calendar",
+        link: "/workerSchedule",
+        allowedRoles: ["worker"],
+      },
+    ],
+  }
 ]);
 
 const filteredMenuItems = computed(() => {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container width="1540">
     <div class="mb-8 d-flex justify-center">
       <div class="d-flex align-center">
         <v-btn
@@ -251,7 +251,7 @@
         </v-table>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

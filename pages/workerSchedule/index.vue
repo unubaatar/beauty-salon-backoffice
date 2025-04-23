@@ -1,8 +1,7 @@
 <template>
-
-    <v-container width="1440">
-
-    </v-container>
+  <v-container width="1440">
+    
+  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -15,8 +14,7 @@ import axios from "axios";
 import { useDisplay } from "vuetify";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-const { mdAndUp } = useDisplay();
+import moment from "moment";
 
 const router = useRouter();
 const route = useRoute();
@@ -24,13 +22,7 @@ const route = useRoute();
 const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
 
-const todayData = ref<any>({});
-const last10DayIncome = ref<any>([]);
-const totalMonthIncome = ref<any>({});
-
-onMounted(async () => {
-  router.push("/dashboard")
-});
+const schedules = ref<any>([]);
 
 </script>
 
