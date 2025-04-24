@@ -372,7 +372,13 @@ const getNextWeekData = async () => {
 
 const fetchUsers = async () => {
   try {
-    const response = await axios.post(`${baseURL}/users/all`);
+    const filter = {
+      role: "worker"
+    };
+    const query = {
+      filter: filter
+    }
+    const response = await axios.post(`${baseURL}/users/list` , query );
     if (response.status === 200) {
       users.value = response.data.rows;
     } else {

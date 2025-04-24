@@ -227,7 +227,7 @@ const sideBarMenuItems = ref([
         title: "Үйлчилгээ",
         logo: "mdi-chart-box",
         link: "/serviceReport",
-        allowedRoles: ["admin", "seller", "manager"],
+        allowedRoles: ["admin", "manager"],
       },
       {
         title: "Бүтээгдэхүүн",
