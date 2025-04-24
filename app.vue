@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-container max-width="1440" style="width: 100%;">
+    <v-container     v-if="checkTokenValue" max-width="1440" style="width: 100%;">
       <div
-      v-if="checkTokenValue"
+  
       class="d-flex justify-center"
       style="position: sticky; top: 0; z-index: 10"
       :style="isMobile ? 'margin-left: 90px' : 'margin-left: 300px'"

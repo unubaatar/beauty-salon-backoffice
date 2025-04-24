@@ -55,7 +55,7 @@
                       schedule.worker.firstName
                     }}</span>
                     <div>
-                      Нийт цагийн захиалга:
+                      Нийт цаг товлолт:
                       <span
                         class="ml-2"
                         style="font-weight: 500; font-size: 16px"
