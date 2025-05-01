@@ -1,7 +1,7 @@
 <template>
-  <v-container max-width="1440">
+  <v-container max-width="1680">
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12"   sm="6" md="4">
         <v-card class="pa-4" rounded="lg">
           <div class="text-center" style="font-size: 20px; font-weight: 550">
             Дэлгэрэнгүй
@@ -44,7 +44,7 @@
           </div>
         </v-card>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="6" md="4">
         <v-card class="mt-4 pa-4 align-center" rounded="lg">
           <div class="text-center" style="font-size: 20px; font-weight: 550">
             Ажилтан
@@ -118,7 +118,7 @@
         </v-card>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="6" md="4">
         <v-card class="pa-4" rounded="lg">
           <div
             class="text-center"

@@ -2,11 +2,11 @@
   <v-layout>
     <v-navigation-drawer
       app
+      fixed
       :width="drawerWidth"
       :mini-variant="isMini"
       :permanent="true"
       :temporary="isMobile"
-      floating
       class="bg-dark"
     >
       <v-card
@@ -32,78 +32,76 @@
               variant="text"
               color="white"
               size="small"
-              
               @click="isCollapsed = !isCollapsed"
             >
               <v-icon>mdi-menu</v-icon>
             </v-btn>
           </div>
-          </div>
+        </div>
 
-          <v-expansion-panels
-            v-if="isMounted  && !isMini"
-            variant="accordion"
-            multiple
+        <v-expansion-panels
+          v-if="isMounted && !isMini"
+          variant="accordion"
+          multiple
+          class="bg-dark"
+          style="color: white"
+        >
+          <v-expansion-panel
+            v-for="category in filteredMenuItems"
+            :key="category.title"
+            elevation="0"
             class="bg-dark"
-            style="color: white"
           >
-            <v-expansion-panel
-              v-for="category in filteredMenuItems"
-              :key="category.title"
-              elevation="0"
-              class="bg-dark"
-            >
-              <v-expansion-panel-title
-                class="text-subtitle-2 font-weight-medium"
-              >
-                <template v-if="showText">
-                  <div style="color: white; font-size: 16px">
-                    {{ category.title }}
-                  </div>
-                </template>
-                <template v-else>
-                  <v-icon style="color: white">mdi-folder</v-icon>
-                </template>
-              </v-expansion-panel-title>
-
-              <v-expansion-panel-text class="pl-0">
-                <div
-                  v-for="item in category.items"
-                  :key="item.title"
-                  class="pa-2 sideBarItem d-flex align-center"
-                  style="cursor: pointer; border-radius: 4px"
-                  :style="checkRoute(item.link) ? 'background-color: #0d0d0d ': ''"
-                  @click="goToLink(item.link)"
-                >
-                  <v-icon style="color: white">{{ item.logo }}</v-icon>
-                  <span class="ml-3" v-if="showText" style="color: white">{{
-                    item.title
-                  }}</span>
+            <v-expansion-panel-title class="text-subtitle-2 font-weight-medium">
+              <template v-if="showText">
+                <div style="color: white; font-size: 16px">
+                  {{ category.title }}
                 </div>
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
+              </template>
+              <template v-else>
+                <v-icon style="color: white">mdi-folder</v-icon>
+              </template>
+            </v-expansion-panel-title>
 
-
-          <div v-if="isMounted && isMini" style="color: white">
-            <div v-for="category in filteredMenuItems" :key="category.title">
-              <div
-                v-if="showText"
-                class="mt-4 mb-2 ml-2 text-subtitle-2 font-weight-medium"
-              >
-                {{ category.title }}
-              </div>
+            <v-expansion-panel-text class="pl-0">
               <div
                 v-for="item in category.items"
                 :key="item.title"
                 class="pa-2 sideBarItem d-flex align-center"
                 style="cursor: pointer; border-radius: 4px"
+                :style="
+                  checkRoute(item.link) ? 'background-color: #0d0d0d ' : ''
+                "
                 @click="goToLink(item.link)"
               >
-                <v-icon>{{ item.logo }}</v-icon>
-                <span class="ml-3" v-if="showText">{{ item.title }}</span>
+                <v-icon style="color: white">{{ item.logo }}</v-icon>
+                <span class="ml-3" v-if="showText" style="color: white">{{
+                  item.title
+                }}</span>
               </div>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+
+        <div v-if="isMounted && isMini" style="color: white">
+          <div v-for="category in filteredMenuItems" :key="category.title">
+            <div
+              v-if="showText"
+              class="mt-4 mb-2 ml-2 text-subtitle-2 font-weight-medium"
+            >
+              {{ category.title }}
             </div>
+            <div
+              v-for="item in category.items"
+              :key="item.title"
+              class="pa-2 sideBarItem d-flex align-center"
+              style="cursor: pointer; border-radius: 4px"
+              @click="goToLink(item.link)"
+            >
+              <v-icon>{{ item.logo }}</v-icon>
+              <span class="ml-3" v-if="showText">{{ item.title }}</span>
+            </div>
+          </div>
         </div>
       </v-card>
     </v-navigation-drawer>
@@ -118,7 +116,7 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import { useAuthStore  } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
 
 const auth = useAuthStore();
 
@@ -144,7 +142,7 @@ onMounted(() => {
 
 const sideBarMenuItems = ref([
   {
-    title: "Dashboard",
+    title: "Хяналтын самбар",
     items: [
       {
         title: "Хяналтын самбар",
@@ -155,16 +153,16 @@ const sideBarMenuItems = ref([
     ],
   },
   {
-    title: "Users",
+    title: "Хэрэглэгч",
     items: [
       {
-        title: "Ажилчид",
+        title: "Ажилтан",
         logo: "mdi-account-box",
         link: "/team",
         allowedRoles: ["admin"],
       },
       {
-        title: "Ажилчидын түвшин",
+        title: "Ажилтаны түвшин",
         logo: "mdi-medal-outline",
         link: "/workerLevels",
         allowedRoles: ["admin"],
@@ -172,16 +170,16 @@ const sideBarMenuItems = ref([
     ],
   },
   {
-    title: "Services",
+    title: "Үйлчилгээ",
     items: [
       {
-        title: "Үйлчилгээнүүд",
+        title: "Үйлчилгээ",
         logo: "mdi-hair-dryer-outline",
         link: "/services",
         allowedRoles: ["admin", "manager"],
       },
       {
-        title: "Үйлчилгээний ангилалууд",
+        title: "Үйлчилгээний ангилал",
         logo: "mdi-shape-plus",
         link: "/serviceCategories",
         allowedRoles: ["admin", "manager"],
@@ -195,22 +193,22 @@ const sideBarMenuItems = ref([
     ],
   },
   {
-    title: "Products",
+    title: "Борлуулалт",
     items: [
       {
-        title: "Захиалгууд",
+        title: "Захиалга",
         logo: "mdi-cart",
         link: "/orders",
         allowedRoles: ["admin", "seller"],
       },
       {
-        title: "Бүтээгдэхүүнүүд",
+        title: "Бүтээгдэхүүн",
         logo: "mdi-lipstick",
         link: "/products",
         allowedRoles: ["admin", "seller"],
       },
       {
-        title: "Бүтээгдэхүүний ангилалууд",
+        title: "Бүтээгдэхүүний ангилал",
         logo: "mdi-shape-plus",
         link: "/productCategories",
         allowedRoles: ["admin", "seller"],
@@ -218,23 +216,23 @@ const sideBarMenuItems = ref([
     ],
   },
   {
-    title: "Report",
+    title: "Тайлан",
     items: [
       {
         title: "Ажилтан",
-        logo: "mdi-chart-box",
+        logo: "mdi-chart-bell-curve-cumulative",
         link: "/timeReserveReport",
         allowedRoles: ["admin", "manager"],
       },
       {
         title: "Үйлчилгээ",
-        logo: "mdi-chart-box",
+        logo: "mdi-chart-line",
         link: "/serviceReport",
         allowedRoles: ["admin", "manager"],
       },
       {
         title: "Бүтээгдэхүүн",
-        logo: "mdi-chart-box",
+        logo: "mdi-chart-ppf",
         link: "/productReport",
         allowedRoles: ["admin", "seller"],
       },
@@ -271,7 +269,7 @@ const filteredMenuItems = computed(() => {
 const checkRoute = (link: any) => {
   const currentPath = router.currentRoute.value.fullPath;
   return currentPath === link;
-}
+};
 
 const goToLink = (link: string) => {
   router.push(link);
@@ -286,7 +284,7 @@ const goToLink = (link: string) => {
   background-color: #101828 !important;
 }
 
-:deep() .v-expansion-panel-text__wrapper {  
+:deep() .v-expansion-panel-text__wrapper {
   padding: 0px !important;
   padding-left: 16px !important;
 }

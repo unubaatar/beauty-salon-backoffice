@@ -191,16 +191,12 @@
             <tr v-for="time in times" style="height: 60px !important">
               <td style="height: 60px">{{ time }}</td>
 
-              <v-hover>
-                <template v-slot:default="{ isHovering, props }">
                   <td
                     style="position: relative; overflow: visible"
                     v-for="schedule in currentScheduleDetail"
                   >
                     <v-card
                       @click="goToDetail(getResvervedTime(schedule, time)._id)"
-                      v-bind="props"
-                      :color="isHovering ? 'primary' : undefined"
                       class="pa-2"
                       variant="tonal"
                       style="background-color: white; cursor: pointer"
@@ -244,8 +240,6 @@
                       </div>
                     </v-card>
                   </td>
-                </template>
-              </v-hover>
             </tr>
           </tbody>
         </v-table>
