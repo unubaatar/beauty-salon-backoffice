@@ -156,6 +156,7 @@ import { useDisplay } from "vuetify";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
+import { useAuthStore  } from "@/stores/auth";
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
 const canvasRef = ref<any>(null);
@@ -168,6 +169,8 @@ const route = useRoute();
 
 const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
+
+const auth = useAuthStore();
 
 const todayData = ref<any>({});
 const last10DayIncome = ref<any>([]);
@@ -254,7 +257,7 @@ const fetchMonthData = async () => {
 const fetchUser = async () => {
   try {
     const query = {
-      _id: localStorage.getItem("userId"),
+      _id: auth?.user?._id,
     };
     const response = await axios.post(`${baseURL}/users/getById`, query);
     if (response.status === 200) {

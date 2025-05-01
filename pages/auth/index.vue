@@ -80,6 +80,9 @@ import axios from "axios";
 import { useDisplay } from "vuetify";
 import { ref, onMounted } from "vue";
 import { useRoute , useRouter } from "vue-router";
+import { useAuthStore  } from "@/stores/auth";
+
+
 const { mdAndUp } = useDisplay();
 
 const router = useRouter();
@@ -87,6 +90,8 @@ const route = useRoute();
 
 const config = useRuntimeConfig();
 const baseURL = config.public.baseURL;
+
+const auth = useAuthStore();
 
 const passwordVisible = ref(false);
 const userData = ref<any>({});
@@ -104,6 +109,8 @@ const login = async() => {
       localStorage.setItem("role" , response.data.user.role);
       localStorage.setItem("userName" , response.data.user.firstName);
       localStorage.setItem("token" , response.data.token);
+      auth.setUser(response.data.user)
+      auth.setToken(response.data.token);
       window.location.reload();
       router.push("/dashboard");
     } else {

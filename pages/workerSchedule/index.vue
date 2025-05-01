@@ -115,6 +115,7 @@ import { useRoute, useRouter } from "vue-router";
 import moment from "moment";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { useAuthStore  } from "@/stores/auth";
 
 import { io } from "socket.io-client";
 
@@ -126,6 +127,8 @@ const baseURL = config.public.baseURL;
 
 const schedule = ref<any>([]);
 const userId = ref<any>(null);
+
+const auth = useAuthStore();
 
 let socketUpdate: any;
 let socketCreate: any;
@@ -144,7 +147,7 @@ const timeReserveCreatedHandler = (createdReserve: any) => {
 
 const fetchSchedule = async () => {
   try {
-    const workerId = localStorage.getItem("userId");
+    const workerId = auth?.user?._id;
     const now = moment();
     const formattedDate = now.format("YYYY-MM-DD");
     const query = {
@@ -166,7 +169,7 @@ const fetchSchedule = async () => {
 };
 
 onMounted(async () => {
-  userId.value = localStorage.getItem("userId");
+  userId.value = auth?.user?._id
 
   if (!userId.value) return;
 
