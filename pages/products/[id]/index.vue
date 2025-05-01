@@ -86,7 +86,7 @@
                 </v-select
               ></v-col>
 
-              <v-col cols="4"
+              <!-- <v-col cols="4"
                 ><v-text-field
                   v-model="product.stock"
                   variant="outlined"
@@ -95,7 +95,7 @@
                   type="Number"
                 >
                 </v-text-field
-              ></v-col>
+              ></v-col> -->
 
               <v-col cols="12"
                 ><v-textarea

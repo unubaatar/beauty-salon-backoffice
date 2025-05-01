@@ -113,7 +113,7 @@
               class="pa-8 d-flex flex-column justify-space-around"
             >
               <div class="text-end" style="font-size: 32px; font-weight: 550">
-                Энэ сарын нйит орлого:
+                Энэ сарын нийт орлого:
               </div>
               <div class="text-end" style="font-size: 48px; font-weight: 550">
                 {{ totalMonthIncome.totalIncome?.toLocaleString() }}₮

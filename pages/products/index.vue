@@ -138,12 +138,12 @@ const headers = ref<any>([
     align: "center",
     sortable: false,
   },
-  {
-    title: "Нөөц",
-    value: "stock",
-    align: "center",
-    sortable: false,
-  },
+  // {
+  //   title: "Нөөц",
+  //   value: "stock",
+  //   align: "center",
+  //   sortable: false,
+  // },
   {
     title: "Идэвхтэй эсэх",
     value: "isActive",
