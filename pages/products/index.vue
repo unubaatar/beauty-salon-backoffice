@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container max-width="1680">
       <div class="d-flex justify-end">
         <v-btn color="#101828" @click="router.push('/products/create')">
           <v-icon>mdi-plus</v-icon>Бүтээгдэхүүн нэмэх</v-btn

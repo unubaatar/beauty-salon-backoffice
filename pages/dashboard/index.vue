@@ -1,5 +1,5 @@
 <template>
-  <v-container width="1440">
+  <v-container max-width="1680">
     <v-row>
       <v-col cols="8">
         <v-card rounded="lg" class="pa-8" style="height: 250px">

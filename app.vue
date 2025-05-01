@@ -69,6 +69,7 @@ import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import auth from "./middleware/auth";
+import jwt from 'jsonwebtoken'
 
 const { mdAndUp, smAndDown } = useDisplay();
 
@@ -84,23 +85,50 @@ const authAcc = useAuthStore();
 const checkTokenValue = ref<any>(false);
 const isMobile = computed(() => smAndDown.value);
 
+const decodeJWT = (token: any) => {
+  try {
+    const base64Url = token.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    )
+    return JSON.parse(jsonPayload)
+  } catch (error) {
+    return null
+  }
+}
+
 const checkAuth = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
     authAcc.logout();
     checkTokenValue.value = false;
+    return
   }
-  const response = await axios.post(`${baseURL}/users/checkToken`, {
-    token: token,
-  });
-  if (response.status === 200) {
-    checkTokenValue.value = response.data.valid;
-    if (!checkTokenValue.value) {
-      authAcc.logout();
-    }
-  } else {
-    console.log("jiijii");
+
+  const decoded = decodeJWT(token);
+  const now = Date.now() / 1000
+  if(decoded.exp <= now) {
+    authAcc.logout();
+    checkTokenValue.value = false;
+    return;
   }
+  checkTokenValue.value = true;
+
+  // const response = await axios.post(`${baseURL}/users/checkToken`, {
+  //   token: token,
+  // });
+  // if (response.status === 200) {
+  //   checkTokenValue.value = response.data.valid;
+  //   if (!checkTokenValue.value) {
+  //     authAcc.logout();
+  //   }
+  // } else {
+  //   console.log("jiijii");
+  // }
 };
 
 const logout = () => {

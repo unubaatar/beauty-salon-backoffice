@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <v-container max-width="1680">
     <v-row>
-      <v-col v-for="service in services" cols="12" md="4" xl="3">
+      <v-col v-for="service in services" cols="12" md="6" lg="4"  xl="3">
         <v-card style="cursor: pointer" rounded="lg">
           <img
             style="width: 100%; height: 200px; object-fit: cover"
@@ -166,7 +166,7 @@
         </div>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

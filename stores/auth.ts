@@ -15,9 +15,11 @@ export const useAuthStore = defineStore('auth', {
   state: (): {
     user: User | null
     token: string | null
+    loading: Boolean
   } => ({
     user: null,
     token: null,
+    loading: true
   }),
 
   actions: {
@@ -27,7 +29,11 @@ export const useAuthStore = defineStore('auth', {
     setToken(token: string) {
       this.token = token
     },
+    setLoading() {
+      this.loading = false;
+    },
     logout() {
+      this.loading = false;
       this.user = null
       this.token = null
       localStorage.clear()

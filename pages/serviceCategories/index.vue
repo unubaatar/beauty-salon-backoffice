@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <v-container max-width="1680">
     <div>
       <v-row>
-        <v-col cols="12" md="2" v-for="category in categories">
+        <v-col cols="6"  md="4" lg="3" xl="2" v-for="category in categories">
           <v-card
             @click="
               showUpdateDialog = true;
@@ -88,7 +88,7 @@
         </div>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <v-container max-width="1680">
     <v-row>
-      <v-col v-for="user in users" cols="12" md="4" xl="3">
+      <v-col v-for="user in users" cols="12"  md="6"  lg="4" xl="3">
         <v-card
           style="cursor: pointer; position: relative"
           rounded="lg"
@@ -109,7 +109,7 @@
         </div>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

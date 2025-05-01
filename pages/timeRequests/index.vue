@@ -1,5 +1,5 @@
 <template>
-  <v-container width="1540">
+  <v-container max-width="1680" style="width: 100%;">
     <div class="mb-8 d-flex justify-center">
       <div class="d-flex align-center">
         <v-btn
@@ -27,7 +27,7 @@
     </div>
 
     <v-row>
-      <v-col cols="12" lg="4" md="4" xl="3" v-for="day in weekSchedule">
+      <v-col cols="12" sm="6" md="6" lg="4" xl="3" v-for="day in weekSchedule">
         <v-card variant="outlined" height="540" class="pa-4" rounded="lg">
           <div class="text-center">
             <div style="font-size: 20px; font-weight: 500">

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container max-width="1680">
     <v-btn
       @click="showAddProductDialog = true"
       color="#101828"
@@ -8,7 +8,7 @@
     >
 
     <v-row
-      ><v-col v-for="category in categories" cols="12" md="4" lg="2" xl="2">
+      ><v-col v-for="category in categories" cols="6" md="4" lg="3" xl="2">
         <v-card
           @click="
             showUpdateDialog = true;
@@ -73,7 +73,7 @@
         </div>
       </v-card>
     </v-dialog>
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

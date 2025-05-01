@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container max-width="1680">
     <v-btn
       color="#101828"
       @click="showAddLevelDialog = true"
@@ -8,7 +8,7 @@
     </v-btn>
 
     <v-row>
-      <v-col v-for="level in levels" cols="2">
+      <v-col v-for="level in levels" xl="2" lg="3" md="4" cols="6" >
         <v-card @click="showUpdateDialog = true; levelToUpdate = level;" class="pa-4 d-flex justify-center align-center flex-column" height="200" rounded="lg" style="cursor: pointer">
             <img :src="level.image" style="height: 72px; width: 72px;" alt="">
             <div style="font-weight: 550;" class="mt-2">{{ level.level }}</div>
@@ -75,7 +75,7 @@
       </v-card>
     </v-dialog>
 
-  </div>
+  </v-container>
 </template>
 
 <script setup lang="ts">

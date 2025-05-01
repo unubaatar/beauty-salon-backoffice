@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-container>
+    <v-container max-width="1680">
       <div style="font-size: 20px" class="d-flex justify-end">
         Нийт захиалгын тоо: <span class="ml-2">{{ count }}</span>
       </div>
