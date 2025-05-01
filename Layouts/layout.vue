@@ -118,12 +118,15 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
+import { useAuthStore  } from "@/stores/auth";
+
+const auth = useAuthStore();
 
 const { mdAndUp, smAndDown } = useDisplay();
 const router = useRouter();
 
 const isMounted = ref(false);
-const userRole = ref<string | null>(null);
+const userRole = ref<any>(null);
 const isCollapsed = ref(false);
 
 const isMobile = computed(() => smAndDown.value);
@@ -135,7 +138,7 @@ const drawerWidth = computed(() =>
 const isMini = computed(() => isMobile.value || isCollapsed.value);
 
 onMounted(() => {
-  userRole.value = localStorage.getItem("role");
+  userRole.value = auth?.user?.role;
   isMounted.value = true;
 });
 

@@ -1,8 +1,10 @@
+import { useAuthStore } from '@/stores/auth'
+
 export default defineNuxtRouteMiddleware((to) => {
-    if (import.meta.client) {
-      if (localStorage.getItem("userId")) {
-        return navigateTo("/dashboard");
-      }
+  if (process.client) {
+    const auth = useAuthStore()
+    if (auth.user) {
+      return navigateTo('/dashboard')
     }
-  });
-  
+  }
+})

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>asdfasdf {{ authAcc?.user }}</div>
     <v-container v-if="checkTokenValue" max-width="1440" style="width: 100%">
       <div
         class="d-flex justify-center"
