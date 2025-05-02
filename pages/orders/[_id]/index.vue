@@ -77,11 +77,11 @@
             </article>
           </div>
 
-          <div class="text-center" style="font-weight: 550; font-size: 20px">
+          <div v-if="order.orderType === 'delivery'" class="text-center" style="font-weight: 550; font-size: 20px">
             Хаяг
           </div>
 
-          <v-row class="mt-4">
+          <v-row class="mt-4" v-if="order.orderType === 'delivery'">
             <v-col cols="6">Аймаг/Хот</v-col>
             <v-col cols="6" style="font-weight: 550">{{
               order?.address?.province
