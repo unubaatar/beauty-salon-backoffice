@@ -2,27 +2,15 @@
   <v-container max-width="1680" style="width: 100%;">
     <div class="mb-8 d-flex justify-center">
       <div class="d-flex align-center">
-        <v-btn
-          @click="getPreviousWeekData()"
-          class="mx-2"
-          variant="outlined"
-          color="#101828"
-          size="small"
-          icon="mdi-chevron-left"
-        ></v-btn>
+        <v-btn @click="getPreviousWeekData()" class="mx-2" variant="outlined" color="#101828" size="small"
+          icon="mdi-chevron-left"></v-btn>
         <div class="mx-2" style="font-size: 22px; font-weight: 500">
           {{ weekDays[0] }}
           <v-icon style="font-size: 20px">mdi-arrow-right</v-icon>
           {{ weekDays[1] }}
         </div>
-        <v-btn
-          @click="getNextWeekData()"
-          class="mx-2"
-          variant="outlined"
-          color="#101828"
-          size="small"
-          icon="mdi-chevron-right"
-        ></v-btn>
+        <v-btn @click="getNextWeekData()" class="mx-2" variant="outlined" color="#101828" size="small"
+          icon="mdi-chevron-right"></v-btn>
       </div>
     </div>
 
@@ -35,32 +23,21 @@
             </div>
             <div>{{ day.day }}</div>
           </div>
-          <div
-            class="w-100 my-2"
-            style="height: 1px; background-color: #d3d3d3"
-          ></div>
+          <div class="w-100 my-2" style="height: 1px; background-color: #d3d3d3"></div>
           <div><v-icon>mdi-account-hard-hat</v-icon> Ажиллах ажилчид:</div>
 
           <v-list style="height: 320px">
             <v-list-item class="my-2" v-for="schedule of day.schedules">
               <div class="d-flex align-center justify-space-between">
                 <div class="d-flex">
-                  <img
-                    style="height: 48px; width: 48px; border-radius: 50%"
-                    :src="schedule.worker.avatar"
-                    alt=""
-                  />
+                  <img style="height: 48px; width: 48px; border-radius: 50%" :src="schedule.worker.avatar" alt="" />
                   <div style="font-size: 14px" class="ml-4">
                     <span style="font-weight: 500; font-size: 16px">{{
                       schedule.worker.firstName
                     }}</span>
                     <div>
                       Нийт цаг товлолт:
-                      <span
-                        class="ml-2"
-                        style="font-weight: 500; font-size: 16px"
-                        >{{ schedule.totalServices }}</span
-                      >
+                      <span class="ml-2" style="font-weight: 500; font-size: 16px">{{ schedule.totalServices }}</span>
                     </div>
                   </div>
                 </div>
@@ -68,23 +45,14 @@
                 <div>
                   <v-menu>
                     <template v-slot:activator="{ props }">
-                      <v-btn
-                        icon="mdi-dots-vertical"
-                        variant="text"
-                        size="small"
-                        v-bind="props"
-                      ></v-btn>
+                      <v-btn icon="mdi-dots-vertical" variant="text" size="small" v-bind="props"></v-btn>
                     </template>
 
                     <v-list>
-                      <v-list-item
-                        style="cursor: pointer"
-                        @click="
-                          showConfirmDialog = true;
-                          scheduleToDelete = schedule._id;
-                        "
-                        >Устгах</v-list-item
-                      >
+                      <v-list-item style="cursor: pointer" @click="
+                        showConfirmDialog = true;
+                      scheduleToDelete = schedule._id;
+                      ">Устгах</v-list-item>
                     </v-list>
                   </v-menu>
                 </div>
@@ -93,33 +61,19 @@
           </v-list>
 
           <div class="w-100 d-flex justify-center flex-column align-center">
-            <v-btn
-              @click="
-                currentScheduleDetail = [];
-                showScheduleDetailDialog = true;
-                dateTitle = day.dateTitle;
-                fetchScheduleByDay();
-              "
-              color="#101828"
-              elevation="0"
-              block
-              variant="outlined"
-            >
-              <v-icon class="ml-1">mdi-plus</v-icon> Дэлгэрэнгүй</v-btn
-            >
+            <v-btn @click="
+              currentScheduleDetail = [];
+            showScheduleDetailDialog = true;
+            dateTitle = day.dateTitle;
+            fetchScheduleByDay();
+            " color="#101828" elevation="0" block variant="outlined">
+              <v-icon class="ml-1">mdi-plus</v-icon> Дэлгэрэнгүй</v-btn>
 
-            <v-btn
-              class="mt-4"
-              @click="
-                showAddScheduleDialog = true;
-                dateTitle = day.dateTitle;
-              "
-              color="#101828"
-              elevation="0"
-              block
-            >
-              <v-icon class="ml-1">mdi-plus</v-icon> Хуваарь нэмэх</v-btn
-            >
+            <v-btn class="mt-4" @click="
+              showAddScheduleDialog = true;
+            dateTitle = day.dateTitle;
+            " color="#101828" elevation="0" block>
+              <v-icon class="ml-1">mdi-plus</v-icon> Хуваарь нэмэх</v-btn>
           </div>
         </v-card>
       </v-col>
@@ -130,21 +84,12 @@
         <div class="text-center" style="font-size: 20px; font-weight: 500">
           Хуваарь нэмэх
         </div>
-        <v-select
-          v-model="userToAddSchedule"
-          :items="users"
-          item-value="_id"
-          item-title="firstName"
-          class="mt-4"
-          variant="outlined"
-          label="Ажилтан нэмэх"
-        >
+        <v-select v-model="userToAddSchedule" :items="users" item-value="_id" item-title="firstName" class="mt-4"
+          variant="outlined" label="Ажилтан нэмэх">
         </v-select>
 
         <div class="mt-2 w-100 d-flex justify-end">
-          <v-btn @click="addSchedule()" color="#101828"
-            ><v-icon class="mr-2">mdi-plus</v-icon> Нэмэх</v-btn
-          >
+          <v-btn @click="addSchedule()" color="#101828"><v-icon class="mr-2">mdi-plus</v-icon> Нэмэх</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -155,15 +100,8 @@
           Та хуваарийг устгахдаа итгэлтэй байна уу ?
         </div>
         <div class="mt-4 w-100 d-flex justify-space-around">
-          <v-btn
-            variant="outlined"
-            color="#101828"
-            @click="showConfirmDialog = false"
-            >Үгүй</v-btn
-          >
-          <v-btn color="#101828" @click="deleteSchedule(scheduleToDelete)"
-            >Тийм</v-btn
-          >
+          <v-btn variant="outlined" color="#101828" @click="showConfirmDialog = false">Үгүй</v-btn>
+          <v-btn color="#101828" @click="deleteSchedule(scheduleToDelete)">Тийм</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -176,11 +114,7 @@
               <th>Цаг</th>
               <th v-for="schedule in currentScheduleDetail">
                 <div class="d-flex justify-center align-center py-2">
-                  <img
-                    :src="schedule.worker.avatar"
-                    style="height: 50px; width: 50px; border-radius: 50%"
-                    alt=""
-                  />
+                  <img :src="schedule.worker.avatar" style="height: 50px; width: 50px; border-radius: 50%" alt="" />
                   <span class="ml-4">{{ schedule.worker.firstName }}</span>
                 </div>
               </th>
@@ -191,55 +125,43 @@
             <tr v-for="time in times" style="height: 60px !important">
               <td style="height: 60px">{{ time }}</td>
 
-                  <td
-                    style="position: relative; overflow: visible"
-                    v-for="schedule in currentScheduleDetail"
-                  >
-                    <v-card
-                      @click="goToDetail(getResvervedTime(schedule, time)._id)"
-                      class="pa-2"
-                      variant="tonal"
-                      style="background-color: white; cursor: pointer"
-                      v-if="getResvervedTime(schedule, time)"
-                      :style="{
-                        position: 'absolute',
-                        top: '0',
-                        left: '0',
-                        right: '0',
-                        height:
-                          `${calcHeight(
-                            getResvervedTime(schedule, time).totalDuration
-                          )}` + 'px !important',
-                      }"
-                    >
+              <td style="position: relative; overflow: visible" v-for="schedule in currentScheduleDetail">
+                <v-card @click="goToDetail(getResvervedTime(schedule, time)._id)" class="pa-2" variant="tonal"
+                  style="background-color: white; cursor: pointer" v-if="getResvervedTime(schedule, time)" :style="{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    right: '0',
+                    height:
+                      `${calcHeight(
+                        getResvervedTime(schedule, time).totalDuration
+                      )}` + 'px !important',
+                  }">
+                  <div>
+                    <div class="mb-2 d-flex justify-space-between">
                       <div>
-                        <div class="mb-2 d-flex justify-space-between">
-                          <div>
-                            {{
-                              getResvervedTime(schedule, time).customer
-                                .firstName
-                            }}
-                          </div>
-                          <div>
-                            {{
-                              getResvervedTime(schedule, time).customer.phone
-                            }}
-                          </div>
-                        </div>
-                        <div
-                          v-for="service in getResvervedTime(schedule, time)
-                            .services"
-                        >
-                          <div>
-                            {{ service.service.title }}
-                            <span v-if="service?.variant">
-                              - {{ service?.variant.title }}</span
-                            >
-                          </div>
-                        </div>
+                        {{
+                          getResvervedTime(schedule, time).customer
+                            .firstName
+                        }}
                       </div>
-                    </v-card>
-                  </td>
+                      <div>
+                        {{
+                          getResvervedTime(schedule, time).customer.phone
+                        }}
+                      </div>
+                    </div>
+                    <div v-for="service in getResvervedTime(schedule, time)
+                      .services">
+                      <div>
+                        {{ service.service.title }}
+                        <span v-if="service?.variant">
+                          - {{ service?.variant.title }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </v-card>
+              </td>
             </tr>
           </tbody>
         </v-table>
@@ -372,7 +294,7 @@ const fetchUsers = async () => {
     const query = {
       filter: filter
     }
-    const response = await axios.post(`${baseURL}/users/list` , query );
+    const response = await axios.post(`${baseURL}/users/list`, query);
     if (response.status === 200) {
       users.value = response.data.rows;
     } else {
@@ -406,7 +328,12 @@ const addSchedule = async () => {
       day: moment().format("dddd"),
       worker: userToAddSchedule.value,
     };
-    const response = await axios.post(`${baseURL}/schedules/create`, query);
+    const bearerToken = localStorage.getItem("authToken");
+    const response = await axios.post(`${baseURL}/schedules/create`, query, {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    });
     if (response.status === 201) {
       showAddScheduleDialog.value = false;
       await fetchWeekSchedule();
@@ -424,7 +351,12 @@ const deleteSchedule = async (id: any) => {
   const query = {
     _id: id,
   };
-  const response = await axios.post(`${baseURL}/schedules/delete`, query);
+  const bearerToken = localStorage.getItem("authToken");
+  const response = await axios.post(`${baseURL}/schedules/delete`, query, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`
+    }
+  });
   if (response.status === 200) {
     showConfirmDialog.value = false;
     toast.success("Амжилттай усгалаа");

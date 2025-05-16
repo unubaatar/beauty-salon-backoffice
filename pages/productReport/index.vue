@@ -1,13 +1,8 @@
 <template>
-<v-container width="1440">
-  <div class="d-flex">
-      <v-btn
-        prepend-icon="mdi-clock"
-        variant="outlined"
-        color="#101828"
-        @click="showDatePicker = true"
-        >Өдөр сонгох</v-btn
-      >
+  <v-container width="1440">
+    <div class="d-flex">
+      <v-btn prepend-icon="mdi-clock" variant="outlined" color="#101828" @click="showDatePicker = true">Өдөр
+        сонгох</v-btn>
 
       <div class="d-flex" style="font-weight: 550; font-size: 20px">
         <div class="ml-8">
@@ -20,12 +15,7 @@
       </div>
     </div>
 
-    <v-data-table
-      class="mt-8"
-      hide-default-footer
-      :headers="headers"
-      :items="reportData"
-    >
+    <v-data-table class="mt-8" hide-default-footer :headers="headers" :items="reportData">
       <template v-slot:item.seq="{ index }: any">
         <div class="pa-4" style="font-size: 16px; font-weight: 550">
           {{ index + 1 }}
@@ -34,16 +24,12 @@
 
       <template v-slot:item.image="{ item }: any">
         <div class="pa-4 d-flex align-center">
-          <img
-            :src="item.product.images[0]"
-            style="
+          <img :src="item.product.images[0]" style="
               border-radius: 50%;
               width: 48px;
               height: 48px;
               object-fit: cover;
-            "
-            alt=""
-          />
+            " alt="" />
         </div>
       </template>
 
@@ -74,30 +60,23 @@
             <!-- <template #title></template> -->
           </v-date-picker>
 
-          <v-date-picker
-            header="Дуусах огноо"
-            v-model="endDate"
-          ></v-date-picker>
+          <v-date-picker header="Дуусах огноо" v-model="endDate"></v-date-picker>
         </div>
 
         <div class="d-flex justify-end">
-          <v-btn
-            color="#101828"
-            @click="
-              showDatePicker = false;
-              fetchProductReport();
-            "
-            >Сонгох</v-btn
-          >
+          <v-btn color="#101828" @click="
+            showDatePicker = false;
+          fetchProductReport();
+          ">Сонгох</v-btn>
         </div>
       </v-card>
     </v-dialog>
 
-</v-container>
+  </v-container>
 </template>
 
 <script lang="ts" setup>
-    definePageMeta({
+definePageMeta({
   layout: "layout",
   middleware: "auth",
 });
@@ -161,21 +140,27 @@ const headers = ref<any>([
   },
 ])
 
-const fetchProductReport = async() => {
+const fetchProductReport = async () => {
   try {
     const query = {
       dateFilter: [startDate.value, endDate.value],
     };
+    const bearerToken = localStorage.getItem("authToken");
     const response = await axios.post(
       `${baseURL}/orders/getProductReport`,
-      query
+      query,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
     );
     if (response.status === 200) {
       reportData.value = response.data;
     } else {
       console.log("jiiji");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 }
@@ -184,7 +169,7 @@ const formatDate = (date: string) => {
   return moment(date).format("YYYY-MM-DD");
 };
 
-onMounted(async() => {
+onMounted(async () => {
   const now = new Date();
   startDate.value = new Date(now.getFullYear(), now.getMonth(), 1)
   endDate.value = new Date(now.getFullYear(), now.getMonth() + 1, 0)
@@ -192,6 +177,4 @@ onMounted(async() => {
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

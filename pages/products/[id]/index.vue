@@ -13,78 +13,31 @@
           <v-container class="mt-4">
             <div class="d-flex justify-end">
               <v-btn @click="updateProduct()" color="#101828">
-                <v-icon class="pr-2">mdi-content-save</v-icon>Хадгалах</v-btn
-              >
+                <v-icon class="pr-2">mdi-content-save</v-icon>Хадгалах</v-btn>
             </div>
             <v-row class="mb-4">
               <v-col cols="3" md="2">
-                <v-card
-                  color="#101828"
-                  variant="outlined"
-                  style="aspect-ratio: 1; cursor: pointer"
-                  class="d-flex justify-center align-center"
-                  @click="showImage = true"
-                >
+                <v-card color="#101828" variant="outlined" style="aspect-ratio: 1; cursor: pointer"
+                  class="d-flex justify-center align-center" @click="showImage = true">
                   <v-icon style="font-size: 36px">mdi-plus</v-icon>
-                </v-card></v-col
-              >
+                </v-card></v-col>
 
-              <v-col
-                v-for="image in product.images"
-                cols="3"
-                md="2"
-                color="#101828"
-                variant="outlined"
-                style="aspect-ratio: 1; cursor: pointer"
-              >
-                <img
-                  :src="image"
-                  alt=""
-                  style="width: 100%; height: 100%; border-radius: 16px"
-                />
+              <v-col v-for="image in product.images" cols="3" md="2" color="#101828" variant="outlined"
+                style="aspect-ratio: 1; cursor: pointer">
+                <img :src="image" alt="" style="width: 100%; height: 100%; border-radius: 16px" />
               </v-col>
             </v-row>
 
-            <v-row
-              ><v-col cols="4"
-                ><v-text-field
-                  v-model="product.name"
-                  variant="outlined"
-                  hide-details
-                  label="Нэр"
-                >
-                </v-text-field
-              ></v-col>
-              <v-col cols="4"
-                ><v-text-field
-                  v-model="product.price"
-                  variant="outlined"
-                  hide-details
-                  label="Үнэ"
-                >
-                </v-text-field
-              ></v-col>
-              <v-col cols="4"
-                ><v-text-field
-                  v-model="product.sellPrice"
-                  variant="outlined"
-                  hide-details
-                  label="Хямдасан үнэ"
-                >
-                </v-text-field
-              ></v-col>
-              <v-col cols="4"
-                ><v-select
-                  variant="outlined"
-                  hide-details
-                  v-model="product.category"
-                  label="Ангилал"
-                  :items="categories"
-                  item-value="_id"
-                  item-title="title"
-                >
-                </v-select
-              ></v-col>
+            <v-row><v-col cols="4"><v-text-field v-model="product.name" variant="outlined" hide-details label="Нэр">
+                </v-text-field></v-col>
+              <v-col cols="4"><v-text-field v-model="product.price" variant="outlined" hide-details label="Үнэ">
+                </v-text-field></v-col>
+              <v-col cols="4"><v-text-field v-model="product.sellPrice" variant="outlined" hide-details
+                  label="Хямдасан үнэ">
+                </v-text-field></v-col>
+              <v-col cols="4"><v-select variant="outlined" hide-details v-model="product.category" label="Ангилал"
+                  :items="categories" item-value="_id" item-title="title">
+                </v-select></v-col>
 
               <!-- <v-col cols="4"
                 ><v-text-field
@@ -97,16 +50,9 @@
                 </v-text-field
               ></v-col> -->
 
-              <v-col cols="12"
-                ><v-textarea
-                  style="height: 400px !important"
-                  v-model="product.description"
-                  variant="outlined"
-                  hide-details
-                  label="Тайлбар"
-                >
-                </v-textarea
-              ></v-col>
+              <v-col cols="12"><v-textarea style="height: 400px !important" v-model="product.description"
+                  variant="outlined" hide-details label="Тайлбар">
+                </v-textarea></v-col>
             </v-row>
           </v-container>
         </v-tabs-window-item>
@@ -115,17 +61,11 @@
           <v-container class="mt-4">
             <div class="d-flex justify-end">
               <v-btn @click="showAddVariant = true" color="#101828">
-                <v-icon class="ml-2">mdi-content-save</v-icon>Нэмэх</v-btn
-              >
+                <v-icon class="ml-2">mdi-content-save</v-icon>Нэмэх</v-btn>
             </div>
 
-            <v-data-table
-              style="font-size: 18px"
-              class="mt-4"
-              hide-default-footer
-              :items="product.variants"
-              :headers="headers"
-            >
+            <v-data-table style="font-size: 18px" class="mt-4" hide-default-footer :items="product.variants"
+              :headers="headers">
               <template v-slot:item.seq="{ index }: any">
                 <div class="pa-4">
                   {{ index + 1 }}
@@ -152,24 +92,17 @@
 
               <template v-slot:item.isActive="{ item }: any">
                 <div class="pa-2">
-                  <v-icon color="green" v-if="item.isActive"
-                    >mdi-check-decagram-outline</v-icon
-                  >
+                  <v-icon color="green" v-if="item.isActive">mdi-check-decagram-outline</v-icon>
                   <v-icon color="red" v-else>mdi-close-circle-outline</v-icon>
                 </div>
               </template>
 
               <template v-slot:item.action="{ item }: any">
                 <div class="pa-2">
-                  <v-btn
-                    @click="
-                      showUpdateDialog = true;
-                      varianToUpdate = item;
-                    "
-                    variant="text"
-                    size="small"
-                    icon="mdi-pencil"
-                  ></v-btn>
+                  <v-btn @click="
+                    showUpdateDialog = true;
+                  varianToUpdate = item;
+                  " variant="text" size="small" icon="mdi-pencil"></v-btn>
                 </div>
               </template>
             </v-data-table>
@@ -178,106 +111,55 @@
       </v-tabs-window>
     </div>
 
-    <v-navigation-drawer
-      v-model="showUpdateDialog"
-      location="right"
-      temporary
-      width="500"
-    >
+    <v-navigation-drawer v-model="showUpdateDialog" location="right" temporary width="500">
       <v-container class="px-8">
         <div class="text-center my-6" style="font-size: 20px; font-weight: 550">
           Төрөл Засах
         </div>
 
-        <v-text-field
-          v-model="varianToUpdate.title"
-          variant="outlined"
-          label="Нэр"
-        ></v-text-field>
-        <v-text-field
-          v-model="varianToUpdate.price"
-          variant="outlined"
-          label="Үнэ"
-        ></v-text-field>
-        <v-text-field
-          v-model="varianToUpdate.sellPrice"
-          variant="outlined"
-          label="Зарагдах үнэ"
-        ></v-text-field>
+        <v-text-field v-model="varianToUpdate.title" variant="outlined" label="Нэр"></v-text-field>
+        <v-text-field v-model="varianToUpdate.price" variant="outlined" label="Үнэ"></v-text-field>
+        <v-text-field v-model="varianToUpdate.sellPrice" variant="outlined" label="Зарагдах үнэ"></v-text-field>
 
         <div class="mx-2 mb-2" style="font-weight: 550">Зураг</div>
         <v-row>
           <v-col cols="4" style="aspect-ratio: 1">
-            <v-btn
-              variant="outlined"
-              color="#101828"
-              style="height: 100%; width: 100%"
-              @click="showVariantUpdateImage = true"
-            >  <v-icon>mdi-plus</v-icon> </v-btn
-          ></v-col>
+            <v-btn variant="outlined" color="#101828" style="height: 100%; width: 100%"
+              @click="showVariantUpdateImage = true"> <v-icon>mdi-plus</v-icon> </v-btn></v-col>
           <v-col cols="4" v-for="img in varianToUpdate.images">
-            <img
-              :src="img"
-              alt=""
-              style="aspect-ratio: 1; width: 100%; object-fit: cover"
-            />
+            <img :src="img" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover" />
           </v-col>
-        </v-row>  
-        <div class="d-flex mt-2 align-center"> <span class="mr-2">Идэвхтэй эсэх: </span>    <v-switch hide-details v-model="varianToUpdate.isActive" color="#101828"></v-switch></div>
-    
+        </v-row>
+        <div class="d-flex mt-2 align-center"> <span class="mr-2">Идэвхтэй эсэх: </span> <v-switch hide-details
+            v-model="varianToUpdate.isActive" color="#101828"></v-switch></div>
+
         <div class="mt-4 d-flex justify-end">
           <v-btn color="#101828" @click="updateProductVariant()">Засах</v-btn>
         </div>
       </v-container>
     </v-navigation-drawer>
 
-    <v-navigation-drawer
-      location="right"
-      temporary
-      width="500"
-      v-model="showAddVariant"
-    >
+    <v-navigation-drawer location="right" temporary width="500" v-model="showAddVariant">
       <v-container class="px-8">
         <div class="text-center my-6" style="font-size: 20px; font-weight: 550">
           Төрөл нэмэх
         </div>
 
-        <v-text-field
-          v-model="variantToCreate.title"
-          variant="outlined"
-          label="Нэр"
-        ></v-text-field>
-        <v-text-field
-          v-model="variantToCreate.price"
-          variant="outlined"
-          label="Үнэ"
-        ></v-text-field>
-        <v-text-field
-          v-model="variantToCreate.sellPrice"
-          variant="outlined"
-          label="Зарагдах үнэ"
-        ></v-text-field>
+        <v-text-field v-model="variantToCreate.title" variant="outlined" label="Нэр"></v-text-field>
+        <v-text-field v-model="variantToCreate.price" variant="outlined" label="Үнэ"></v-text-field>
+        <v-text-field v-model="variantToCreate.sellPrice" variant="outlined" label="Зарагдах үнэ"></v-text-field>
 
         <div class="mx-2 mb-2" style="font-weight: 550">Зураг</div>
         <v-row>
           <v-col cols="4" style="aspect-ratio: 1">
-            <v-btn
-              variant="outlined"
-              color="#101828"
-              style="height: 100%; width: 100%"
-              @click="showAddImageVariant = true"
-            >  <v-icon>mdi-plus</v-icon> </v-btn
-          ></v-col>
+            <v-btn variant="outlined" color="#101828" style="height: 100%; width: 100%"
+              @click="showAddImageVariant = true">
+              <v-icon>mdi-plus</v-icon> </v-btn></v-col>
           <v-col cols="4" v-for="img in variantToCreate.images">
-            <img
-              :src="img"
-              alt=""
-              style="aspect-ratio: 1; width: 100%; object-fit: cover"
-            />
+            <img :src="img" alt="" style="aspect-ratio: 1; width: 100%; object-fit: cover" />
           </v-col>
         </v-row>
 
-        {{ variantToCreate }}
 
         <div class="mt-4 d-flex justify-end">
           <v-btn color="primary" @click="createProductVariant()">Нэмэх</v-btn>
@@ -292,15 +174,11 @@
         </div>
         <v-text-field variant="outlined" v-model="addingImage"></v-text-field>
         <div class="d-flex justify-end">
-          <v-btn
-            @click="
-              product.images.push(addingImage);
-              showImage = false;
-              addingImage = '';
-            "
-            color="#101828"
-            >Нэмэх</v-btn
-          >
+          <v-btn @click="
+            product.images.push(addingImage);
+          showImage = false;
+          addingImage = '';
+          " color="#101828">Нэмэх</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -310,20 +188,13 @@
         <div class="text-center mb-4" style="font-weight: 550">
           Нэмэх зурагны URL-аа оруулна уу
         </div>
-        <v-text-field
-          variant="outlined"
-          v-model="variantAddingImage"
-        ></v-text-field>
+        <v-text-field variant="outlined" v-model="variantAddingImage"></v-text-field>
         <div class="d-flex justify-end">
-          <v-btn
-            @click="
-              variantToCreate.images.push(variantAddingImage);
-              showAddImageVariant = false;
-              variantAddingImage = '';
-            "
-            color="#101828"
-            >Нэмэх</v-btn
-          >
+          <v-btn @click="
+            variantToCreate.images.push(variantAddingImage);
+          showAddImageVariant = false;
+          variantAddingImage = '';
+          " color="#101828">Нэмэх</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -333,20 +204,13 @@
         <div class="text-center mb-4" style="font-weight: 550">
           Нэмэх зурагны URL-аа оруулна уу
         </div>
-        <v-text-field
-          variant="outlined"
-          v-model="variantAddingImage"
-        ></v-text-field>
+        <v-text-field variant="outlined" v-model="variantAddingImage"></v-text-field>
         <div class="d-flex justify-end">
-          <v-btn
-            @click="
-              varianToUpdate.images.push(variantAddingImage);
-              showVariantUpdateImage = false;
-              variantAddingImage = '';
-            "
-            color="#101828"
-            >Нэмэх</v-btn
-          >
+          <v-btn @click="
+            varianToUpdate.images.push(variantAddingImage);
+          showVariantUpdateImage = false;
+          variantAddingImage = '';
+          " color="#101828">Нэмэх</v-btn>
         </div>
       </v-card>
     </v-dialog>
@@ -463,9 +327,15 @@ const fetchProduct = async () => {
 
 const updateProduct = async () => {
   try {
+    const bearerToken = localStorage.getItem("authToken");
     const response = await axios.post(
       `${baseURL}/products/update`,
-      product.value
+      product.value,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
     );
     if (response.status === 200) {
       await fetchProduct();
@@ -498,9 +368,16 @@ const createProductVariant = async () => {
       productId: product.value._id,
       variant: variantToCreate.value,
     };
+    const bearerToken = localStorage.getItem("authToken");
+
     const response = await axios.post(
       `${baseURL}/productVariants/create`,
-      query
+      query,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
     );
     if (response.status === 201) {
       variantToCreate.value = {};
@@ -517,9 +394,16 @@ const createProductVariant = async () => {
 
 const updateProductVariant = async () => {
   try {
+    const bearerToken = localStorage.getItem("authToken");
+
     const response = await axios.post(
       `${baseURL}/productVariants/update`,
-      varianToUpdate.value
+      varianToUpdate.value,
+      {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        }
+      }
     );
     if (response.status === 200) {
       showUpdateDialog.value = false;

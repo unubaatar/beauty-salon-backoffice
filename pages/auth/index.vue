@@ -104,11 +104,8 @@ const login = async() => {
   try {
     const response = await axios.post(`${baseURL}/users/login` , userData.value);
     if(response.status === 200) {
-      // localStorage.setItem("userId" , response.data.user._id);
-      // localStorage.setItem('avatar' , response.data.user.avatar);
-      // localStorage.setItem("role" , response.data.user.role);
-      // localStorage.setItem("userName" , response.data.user.firstName);
       localStorage.setItem("token" , response.data.token);
+      localStorage.setItem("authToken" , response.data.bearerToken)
       auth.setUser(response.data.user)
       auth.setToken(response.data.token);
       window.location.reload();

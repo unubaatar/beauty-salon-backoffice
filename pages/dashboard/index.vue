@@ -4,17 +4,13 @@
       <v-col cols="8">
         <v-card rounded="lg" class="pa-8" style="height: 250px">
           <div class="mt-2 d-flex">
-            <img
-              :src="user.avatar"
-              style="
+            <img :src="user.avatar" style="
                 border-radius: 50%;
                 width: 150px;
                 border: 2px solid #f2f2f2;
                 aspect-ratio: 1;
                 object-fit: cover;
-              "
-              alt=""
-            />
+              " alt="" />
 
             <article class="ml-8">
               <div class="d-flex justify-end">
@@ -39,11 +35,7 @@
       </v-col>
 
       <v-col cols="4">
-        <v-card
-          rounded="lg"
-          style="height: 250px"
-          class="pa-8 d-flex flex-column justify-space-between"
-        >
+        <v-card rounded="lg" style="height: 250px" class="pa-8 d-flex flex-column justify-space-between">
           <h3 style="font-size: 32px; font-weight: 550">Өнөөдөр:</h3>
 
           <div style="font-size: 24px" class="d-flex">
@@ -65,11 +57,7 @@
       <v-col cols="8">
         <v-row>
           <v-col cols="6">
-            <v-card
-              rounded="lg"
-              class="pa-8 d-flex flex-column justify-space-around"
-              style="height: 250px"
-            >
+            <v-card rounded="lg" class="pa-8 d-flex flex-column justify-space-around" style="height: 250px">
               <div class="text-end" style="font-size: 32px; font-weight: 550">
                 Бүтээгдэхүүний нийт орлого
               </div>
@@ -80,11 +68,7 @@
           </v-col>
 
           <v-col cols="6">
-            <v-card
-              rounded="lg"
-              style="height: 250px"
-              class="pa-8 d-flex flex-column justify-space-around"
-            >
+            <v-card rounded="lg" style="height: 250px" class="pa-8 d-flex flex-column justify-space-around">
               <div class="text-end" style="font-size: 32px; font-weight: 550">
                 Үйлчилгээний нийт орлого
               </div>
@@ -95,11 +79,7 @@
           </v-col>
 
           <v-col cols="6">
-            <v-card
-              rounded="lg"
-              class="pa-4 d-flex justify-center align-center flex-column"
-              style="height: 250px"
-            >
+            <v-card rounded="lg" class="pa-4 d-flex justify-center align-center flex-column" style="height: 250px">
               <div style="font-size: 20px; font-weight: 550" class="mb-2">
                 Өнөөдрийн орлого
               </div>
@@ -107,11 +87,7 @@
             </v-card>
           </v-col>
           <v-col cols="6">
-            <v-card
-              rounded="lg"
-              style="height: 250px"
-              class="pa-8 d-flex flex-column justify-space-around"
-            >
+            <v-card rounded="lg" style="height: 250px" class="pa-8 d-flex flex-column justify-space-around">
               <div class="text-end" style="font-size: 32px; font-weight: 550">
                 Энэ сарын нийт орлого:
               </div>
@@ -130,13 +106,10 @@
           </div>
 
           <v-list class="mt-2" style="overflow-y: auto; max-height: 424px">
-            <v-list-item
-              class="d-flex"
-              v-for="day of last10DayIncome"
-              :key="day.dateTitle"
-            >
+            <v-list-item class="d-flex" v-for="day of last10DayIncome" :key="day.dateTitle">
               <span style="font-size: 16px;">{{ day.dateTitle }}</span>
-              <span style="font-weight: 550; font-size: 20px;"  class="ml-4">{{ day.totalIncome?.toLocaleString() }}₮</span>
+              <span style="font-weight: 550; font-size: 20px;" class="ml-4">{{ day.totalIncome?.toLocaleString()
+              }}₮</span>
             </v-list-item>
           </v-list>
         </v-card>
@@ -156,7 +129,7 @@ import { useDisplay } from "vuetify";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
-import { useAuthStore  } from "@/stores/auth";
+import { useAuthStore } from "@/stores/auth";
 Chart.register(PieController, ArcElement, Tooltip, Legend);
 
 const canvasRef = ref<any>(null);
@@ -222,7 +195,12 @@ const drawPieChart = () => {
 
 const fetchTodayData = async () => {
   try {
-    const response = await axios.post(`${baseURL}/reports/getTodayData`);
+    const bearerToken = localStorage.getItem("authToken");
+    const response = await axios.post(`${baseURL}/reports/getTodayData`, {}, {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    });
     if (response.status === 200) {
       todayData.value = response.data;
       drawPieChart();
@@ -234,7 +212,12 @@ const fetchTodayData = async () => {
 
 const fetchLast10DaysData = async () => {
   try {
-    const response = await axios.post(`${baseURL}/reports/getLastTenDaysData`);
+    const bearerToken = localStorage.getItem("authToken");
+    const response = await axios.post(`${baseURL}/reports/getLastTenDaysData`, {}, {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    });
     if (response.status === 200) {
       last10DayIncome.value = response.data;
     }
@@ -245,7 +228,12 @@ const fetchLast10DaysData = async () => {
 
 const fetchMonthData = async () => {
   try {
-    const response = await axios.post(`${baseURL}/reports/getTotalMonthIncome`);
+    const bearerToken = localStorage.getItem("authToken");
+    const response = await axios.post(`${baseURL}/reports/getTotalMonthIncome`, {}, {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`
+      }
+    });
     if (response.status === 200) {
       totalMonthIncome.value = response.data;
     }
