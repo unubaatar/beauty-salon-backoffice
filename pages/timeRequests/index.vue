@@ -1,5 +1,5 @@
 <template>
-  <v-container max-width="1680" style="width: 100%;">
+  <v-container max-width="1680" style="width: 100%">
     <div class="mb-8 d-flex justify-center">
       <div class="d-flex align-center">
         <v-btn @click="getPreviousWeekData()" class="mx-2" variant="outlined" color="#101828" size="small"
@@ -126,8 +126,8 @@
               <td style="height: 60px">{{ time }}</td>
 
               <td style="position: relative; overflow: visible" v-for="schedule in currentScheduleDetail">
-                <v-card @click="goToDetail(getResvervedTime(schedule, time)._id)" class="pa-2" variant="tonal"
-                  style="background-color: white; cursor: pointer" v-if="getResvervedTime(schedule, time)" :style="{
+                <v-card @click="goToDetail(getResvervedTime(schedule, time)._id)" class="pa-2 ma-4" variant="outlined"
+                  style="background-color: white; cursor: pointer;" v-if="getResvervedTime(schedule, time)" :style="{
                     position: 'absolute',
                     top: '0',
                     left: '0',
@@ -138,22 +138,33 @@
                       )}` + 'px !important',
                   }">
                   <div>
-                    <div class="mb-2 d-flex justify-space-between">
+                    <div class="d-flex justify-space-between">
                       <div>
-                        {{
-                          getResvervedTime(schedule, time).customer
-                            .firstName
-                        }}
+
+                        <div class="d-flex align-center">
+                          <img class="mr-2" :src="getResvervedTime(schedule, time).customer.avatar" alt=""
+                            style="width: 24px; height: 24px; border-radius: 50%;">
+
+                          {{
+                            getResvervedTime(schedule, time).customer.firstName
+                          }}
+                        </div>
+
                       </div>
-                      <div>
-                        {{
-                          getResvervedTime(schedule, time).customer.phone
-                        }}
+                      <div class="d-flex align-center" style="font-size: 13px; font-weight: 550;">
+                        <v-icon class="mr-1">mdi-phone</v-icon>
+                        {{ getResvervedTime(schedule, time).customer.phone }}
                       </div>
                     </div>
-                    <div v-for="service in getResvervedTime(schedule, time)
+
+                    <div class="text-center" style="font-weight: 550;">Үйлчилгээ</div>
+
+                    <div style="font-size: 13px;" v-for="service in getResvervedTime(schedule, time)
                       .services">
-                      <div>
+
+                      <div class="d-flex align-center" style="font-size: 12px;">
+                        <span> <img class="mr-2" :src="service.service.image"
+                            style="height: 30px; width: 30px; border-radius: 50%;" alt=""></span>
                         {{ service.service.title }}
                         <span v-if="service?.variant">
                           - {{ service?.variant.title }}</span>
@@ -289,11 +300,11 @@ const getNextWeekData = async () => {
 const fetchUsers = async () => {
   try {
     const filter = {
-      role: "worker"
+      role: "worker",
     };
     const query = {
-      filter: filter
-    }
+      filter: filter,
+    };
     const response = await axios.post(`${baseURL}/users/list`, query);
     if (response.status === 200) {
       users.value = response.data.rows;
@@ -331,8 +342,8 @@ const addSchedule = async () => {
     const bearerToken = localStorage.getItem("authToken");
     const response = await axios.post(`${baseURL}/schedules/create`, query, {
       headers: {
-        Authorization: `Bearer ${bearerToken}`
-      }
+        Authorization: `Bearer ${bearerToken}`,
+      },
     });
     if (response.status === 201) {
       showAddScheduleDialog.value = false;
@@ -341,9 +352,11 @@ const addSchedule = async () => {
       toast.success("Амжилттай");
     } else {
       console.log("jiijii");
+
     }
   } catch (err) {
     console.log(err);
+    toast.error("Ажилтаны цаг орсон байна.");
   }
 };
 
@@ -354,8 +367,8 @@ const deleteSchedule = async (id: any) => {
   const bearerToken = localStorage.getItem("authToken");
   const response = await axios.post(`${baseURL}/schedules/delete`, query, {
     headers: {
-      Authorization: `Bearer ${bearerToken}`
-    }
+      Authorization: `Bearer ${bearerToken}`,
+    },
   });
   if (response.status === 200) {
     showConfirmDialog.value = false;
@@ -383,3 +396,14 @@ onMounted(async () => {
   await fetchUsers();
 });
 </script>
+
+<style scoped>
+:deep() .v-table .v-table__wrapper>table>thead>tr>th {
+  border-bottom: none;
+}
+
+:deep() .v-table .v-table__wrapper>table>tbody>tr:not(:last-child)>td,
+.v-table .v-table__wrapper>table>tbody>tr:not(:last-child)>th {
+  border-bottom: none;
+}
+</style>
